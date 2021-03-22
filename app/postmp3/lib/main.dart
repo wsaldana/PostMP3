@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'Login.dart';
+import 'Signup.dart';
+import 'Home.dart';
+
+
 
 void main() {
   runApp(MyApp());
@@ -22,7 +27,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      //home: MyHomePage(title: 'PostMP3'),
+      home: new Home(),
     );
   }
 }
