@@ -39,8 +39,8 @@ const getSongsByName = async(req, res) => {
     res.json(response);
 };
 
-const getSearch = async (req, res) => {
-    //var querySong = 'SELECT '
+const getSearchSongs = async (req, res) => {
+    //const response = await pool.query("SELECT * FROM song WHERE LOWER(nombre) LIKE '%$1%' OR LOWER()", [req.params.name]).rows;
 }
 
 module.exports = {
@@ -49,5 +49,5 @@ module.exports = {
     addUser, 
     getSongs,
     getSongsByName,
-    getSearch
+    getSearchSongs
 };
