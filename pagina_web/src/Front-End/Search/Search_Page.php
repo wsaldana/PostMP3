@@ -11,7 +11,7 @@
     <nav>
         <ul>
             <li>
-              <a href="Home.html">Home</a>
+              <a href="../Home/Home.html">Home</a>
             </li>
         </ul>
     </nav>
