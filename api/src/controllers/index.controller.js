@@ -19,7 +19,7 @@ const getUsers = async (req, res) => {
     const response = await pool.query('SELECT * FROM Usuario');
     res.json({rows: response.rows});
 };
-
+ 
 const getUserByUsername = async(req, res) => {
     const response = await pool.query("SELECT * FROM usuario WHERE username=$1", [req.params.username]);
     res.json(response.rows[0]);
@@ -200,7 +200,38 @@ const deleteAlbum = async (req, res) => {
 }
 
 /** PLAYLIST ------------------------------------------------------------------------------------------------------------------------------------*/
- 
+const getPlaylists = async (req, res) => {
+    const response = await pool.query("SELECT * FROM Playlist");
+    res.json({rows: response.rows});
+}
+
+const getPlaylistByName = async (req, res) => {
+    const response = await pool.query("SELECT * FROM Playlist WHERE LOWER(playlist_name) LIKE '%"+req.params.name+"%'");
+    res.json(response.rows[0]);
+}
+
+const addPlaylist = async (req, res) => {
+    const {paylist_name, id_user} = req.query;
+    const response = await pool.query("INSERT INTO Playlist VALUES(default,$1,$2)", [paylist_name, id_user]);
+    res.json({
+        message: 'Playlist created',
+        body: {
+            playlist: {paylist_name, id_user}
+        }
+    });
+}
+
+const savesSongToPlaylist = async (req, res) => {
+    const {id_playlist, id_song} = req.query;
+    const response = await pool.query("INSERT INTO Playlist_song VALUES(default,$1,$2)", [id_playlist, id_song]);
+    res.json({
+        message: 'Song added to playlist',
+        body: {
+            playlist_song: {id_playlist, id_song}
+        }
+    });
+}
+
 
 /** Inactivar canciones del catalogo--------------------------------------------------------------------------------------------------------------*/
 const enableSong = async (req, res) => {
@@ -244,6 +275,18 @@ const getActiveUsers = async (req, res) => {
     res.json({rows: response.rows});
 }
 
+/**Subscripciones en los ultimos 6 meses*/
+const getSubscripciones = async (req, res) => {
+    const response = await pool.query("SELECT COUNT(*) FROM (SELECT date_sub FROM artist WHERE (current_date - date_sub) <180 UNION SELECT date_sub FROM manager WHERE (current_date - date_sub) <180) AS a");
+    res.json(response.rows[0]);
+}
+
+/**Reproducciones diarias */
+const getDailyUser = async (req, res) => {
+    const response = await pool.query("SELECT COUNT(*) as nreq FROM usuario u INNER JOIN request r ON u.id_user = r.id_user WHERE u.id_user = $1 AND (current_date - r.date_req) < 1", [req.params.name]);
+    res.json(response.rows[0]);
+}
+
 module.exports = {
     getLogin,
     getUsers,
@@ -265,11 +308,17 @@ module.exports = {
     getAlbumByName,
     addAlbum,
     updateAlbum,
-    deleteAlbum, 
+    deleteAlbum,
+    getPlaylists,
+    getPlaylistByName,
+    addPlaylist,
+    savesSongToPlaylist, 
     enableSong,
     getAlbumsLastWeek,
     getPopularArtists,
     getActiveArtists,
     getPopularGenres, 
-    getActiveUsers
+    getActiveUsers,
+    getSubscripciones,
+    getDailyUser
 };

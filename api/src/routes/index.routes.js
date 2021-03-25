@@ -6,7 +6,8 @@ const {getLogin, getUsers, getUserByUsername, addUser,
     getSearchSongs, getSearchSongsByGenre, addSong, updateSong, deleteSong,
     getArtists, getArtistByName, addArtist, updateArtist, deleteArtist,
     getAlbums,getAlbumByName,addAlbum, updateAlbum, deleteAlbum,
-    enableSong, getAlbumsLastWeek, getPopularArtists, getActiveArtists, getPopularGenres, getActiveUsers} = require('../controllers/index.controller');
+    getPlaylists, getPlaylistByName,addPlaylist, savesSongToPlaylist,
+    enableSong, getAlbumsLastWeek, getPopularArtists, getActiveArtists, getPopularGenres, getActiveUsers, getSubscripciones, getDailyUser} = require('../controllers/index.controller');
 
 router.get('/login/:username/:password', getLogin)
 
@@ -29,12 +30,19 @@ router.get('/albums', getAlbums)
 router.get('/albums/:name', getAlbumByName)
 router.get('/albumslastweek', getAlbumsLastWeek)
 
+router.get('/playlists', getPlaylists)
+router.get('/playlists/:name', getPlaylistByName)
+
+router.get('/subscripciones', getSubscripciones)
+router.get('/dailyuser/:id_user', getDailyUser)
 
 
 router.post('/users', addUser);
 router.post('/songs', addSong)
 router.post('/artists', addArtist)
 router.post('/albums', addAlbum)
+router.post('/playlists', addPlaylist)
+router.post('/addsongtoplaylist', savesSongToPlaylist)
 
 
 router.put('/artists', updateArtist)
