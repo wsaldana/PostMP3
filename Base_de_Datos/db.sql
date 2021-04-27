@@ -290,3 +290,185 @@ ON u.id_user = r.id_user
 GROUP BY u.username
 ORDER BY nreq DESC
 
+
+SELECT COUNT(*) as nreq
+FROM usuario u INNER JOIN request r 
+ON u.id_user = r.id_user
+WHERE u.id_user = 1
+AND (current_date - r.date_req) < 1
+
+
+
+-- -----------------------------Lab 10
+
+-- Ejercicio 1
+CREATE OR REPLACE FUNCTION trends(mes1 VARCHAR, año1 INT)
+RETURNS TABLE (año FLOAT,mes FLOAT,genre VARCHAR,nreq INT8)
+AS $$
+BEGIN
+		
+	IF (año1<2020 or año1>2022) THEN
+			raise exception 'Año invalido' USING ERRCODE='22007';
+	END IF;
+	     
+	RETURN QUERY(
+		SELECT 
+			EXTRACT(YEAR FROM r.date_req) AS año,
+			EXTRACT(MONTH FROM r.date_req) AS mes,
+			s.genre, 
+			COUNT(*) as nreq
+		FROM song s INNER JOIN request r 
+		ON s.id_song = r.id_song
+		WHERE 
+			EXTRACT(MONTH FROM r.date_req) = EXTRACT(MONTH FROM TO_DATE(mes1, 'Month'))
+			AND EXTRACT(YEAR FROM r.date_req) = año1
+		GROUP BY s.genre, r.date_req
+		ORDER BY nreq DESC
+	);
+
+	exception 
+		when invalid_datetime_format then
+			raise exception 'Mes invalido';
+END; 
+$$
+LANGUAGE plpgsql; 
+
+SELECT * FROM trends('March',2020)
+
+
+
+-- Ejercicio 2
+CREATE OR REPLACE FUNCTION album_ingresos(id INT, limite INT DEFAULT NULL)
+RETURNS TABLE (artista VARCHAR, album VARCHAR, track VARCHAR, reproducciones INT8)
+AS $$
+BEGIN
+	IF (SELECT COUNT(*) FROM album WHERE id_album = id) <1 THEN 
+		RAISE EXCEPTION 'No existe el álbum solicitado';
+	END IF;
+	     
+	RETURN QUERY(
+		SELECT a.art_name AS artista, b.album_name AS album, sr.track, sr.reproducciones
+		FROM(
+			SELECT s.id_artist, s.id_album, s.song_name AS track, COUNT(*) AS reproducciones
+			FROM request r INNER JOIN song s
+				ON r.id_song = s.id_song 
+			WHERE s.id_album  = id
+			GROUP BY s.song_name, s.id_artist, s.id_album
+		) AS sr 
+		INNER JOIN artist a 
+			ON a.id_artist = sr.id_artist
+		INNER JOIN album b 
+			ON b.id_album = sr.id_album
+		WHERE limite IS NULL OR sr.reproducciones > limite
+	);
+END; 
+$$
+LANGUAGE plpgsql; 
+
+SELECT * FROM album_ingresos(2);
+SELECT * FROM album_ingresos(2, 1);
+
+
+
+-- Ejercicio 3
+SELECT * FROM request;
+
+SELECT id_user, COUNT(DISTINCT(id_song)) AS cantidad_canciones_distintas 
+FROM request 
+GROUP BY id_user
+ORDER BY cantidad_canciones_distintas DESC
+
+DROP FUNCTION ranking
+
+
+CREATE OR REPLACE FUNCTION unranked()
+RETURNS TABLE (rank1 INT, id_user INT4, cantidad_canciones_distintas INT8)
+AS $$
+BEGIN
+	RETURN QUERY(
+		SELECT 0 AS rank1, r.id_user, COUNT(DISTINCT(r.id_song)) AS cantidad_canciones_distintas 
+		FROM request r
+		GROUP BY r.id_user
+		ORDER BY cantidad_canciones_distintas DESC
+	);
+END; 
+$$
+LANGUAGE plpgsql; 
+
+SELECT * FROM unranked();
+
+
+DROP FUNCTION ranking;
+CREATE OR REPLACE FUNCTION ranking(rank2 INT)
+RETURNS TABLE (id_user INT4, cantidad_canciones_distintas INT8)
+AS $$
+	DECLARE 
+		canciones INT8;
+		n INT;
+		user1 INT4;
+		c1 INT8;
+		c2 INT8;
+		unranked CURSOR FOR
+			SELECT 0 AS rank1, r.id_user, COUNT(DISTINCT(r.id_song)) AS cantidad_canciones_distintas 
+			FROM request r
+			GROUP BY r.id_user
+			ORDER BY cantidad_canciones_distintas DESC;
+BEGIN
+
+	SELECT COUNT(*)-1 INTO n FROM unranked();
+	SELECT COUNT(DISTINCT(r.cantidad_canciones_distintas)) INTO canciones FROM unranked() r;
+
+	CREATE TEMP TABLE ranked(rank1 INT8, id_user INT4, cantidad_canciones_distintas INT8); 
+	
+	FOR i IN unranked LOOP
+		SELECT r.id_user INTO user1 FROM unranked() r OFFSET n-i LIMIT 1;
+		SELECT r.cantidad_canciones_distintas INTO c1 FROM unranked() r OFFSET n-i LIMIT 1;
+		SELECT r.cantidad_canciones_distintas INTO c2 FROM unranked() r OFFSET n-i-1 LIMIT 1;
+		INSERT INTO ranked VALUES(canciones, user1, c1);
+		UPDATE unranked SET rank1 = canciones WHERE id_user = user1;
+		IF(c1 != c2) THEN
+			canciones = canciones - 1;
+		END IF;
+	END LOOP;
+	     
+	RETURN QUERY(
+		SELECT r.id_user, r.cantidad_canciones_distintas FROM ranked r
+	);
+END; 
+$$
+LANGUAGE plpgsql; 
+
+SELECT * FROM ranking(3);
+
+
+
+DROP FUNCTION ranking
+
+CREATE OR REPLACE FUNCTION ranking(ran INT)
+RETURNS TABLE (id_user INT4, us VARCHAR, cantidad_canciones_distintas INT8)
+AS $$
+BEGIN
+	
+	RETURN QUERY(
+		SELECT r.id_user, u.username, r.cantidad_canciones_distintas
+		FROM( 
+			SELECT 
+				r.id_user, 
+				COUNT(DISTINCT(r.id_song)) AS cantidad_canciones_distintas,
+				DENSE_RANK() OVER(
+					ORDER BY COUNT(DISTINCT(r.id_song)) DESC
+				) rank_place
+			FROM request r
+			GROUP BY r.id_user
+		) AS r INNER JOIN usuario u
+		ON r.id_user = u.id_user 
+		WHERE r.rank_place = ran
+	);
+END; 
+$$
+LANGUAGE plpgsql; 
+
+SELECT * FROM ranking(3);
+
+
+
