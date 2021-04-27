@@ -1,14 +1,17 @@
 <?php
-  $song_name = $_POST['delete_song'];
-  $data = json_decode(file_get_contents("https://0415813673e8.ngrok.io/songs/$song_name"), true);
-  print_r($data);
-  //$_DELETE[$data];
-  //delete /https://0415813673e8.ngrok.io/songs/24
+  $id_song = $_POST['delete_song'];
+  $data = json_decode(file_get_contents("https://0415813673e8.ngrok.io/songs/$id_song"), true);
+  $delete_song = $_DELETE['delete_song'];
+    //echo $data['id_user'];
+
+
+    /* OnClick="location.href= ´../Home/Home.html´"*/ 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
