@@ -14,6 +14,20 @@ print(" |    Carlos Ráxtum #19721       |")
 print(" |    Abraham Gutierrez #19111   |")
 print(" |_______________________________| \n")
 
+print("Ingrese una de las siguientes opciones: ")
+o = input("\t1) Login \n\t2) Registrarse\n")
+
+user_data = {}
+
+if(o == "1"):
+    print("\nPor favor ingrese sus credenciales.")
+    usuario = input("Usuario: ")
+    contra = input("Contraseña: ")
+elif(o == "2"):
+    print("\nGracias por ser parte de nuestra comunidad.")
+    usuario = input("Nombre de usuario: ")
+    contra = input("Ingrese su contraseña: ") 
+    contra2 = input("Repita su contraseña: ") 
 
 while(True):
     try:
