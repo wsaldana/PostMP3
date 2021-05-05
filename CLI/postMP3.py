@@ -72,17 +72,19 @@ while(True):
             opc = int(input("Ingrese una opcion: "))
             try:
                 if opc == 1:
-                    print("\t¿DESEA REPRODUCIR CANCION?")
-                    print("\t\t1) SI")
-                    print("\t\t2) Regresar al menu")
-                    opci=int(input("Ingrese una opcion"))
+                    cancion = input("INGRESE SUS PARÁMETROS DE BUSQUEDA: ")
+                    res_busqueda = controller.seachSong(cancion)
+                    for i in range(len(res_busqueda)):
+                        print("\t",i+1, ") ", res_busqueda[i]['song_name'], " - ", res_busqueda[i]['art_name'], ". [", res_busqueda[i]['genre'], "]")
+                    print("\n\t¿DESEA REPRODUCIR UNA CANCION?")
+                    print("\t\t- Ingrese el número de la canción")
+                    print("\t\t- Ingrese 'q' para regresar el menú")
+                    opci=input("\tIngrese una opcion: ")
                     try:
-                        if opci == 1:
-                            print("reproducir")
-                        elif opci == 2:
+                        if opci == "q":
                             print("regresar a menu principal")
                         else:
-                            print('opcion no valida')
+                            print("Reproduciendo '", res_busqueda[int(opci)-1]['song_name'], "': ", res_busqueda[int(opci)-1]['url'])
                     except ValueError:
                         print('Por favor, ingresar numeros enteros')
                         print("")

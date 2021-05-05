@@ -44,12 +44,12 @@ const getSongsByName = async(req, res) => {
 };
 
 const getSearchSongs = async (req, res) => {
-    const response = await pool.query("SELECT * FROM song s INNER JOIN artist a ON s.id_artist = a.id_artist WHERE LOWER(s.song_name) LIKE LOWER('%"+req.params.input+"%') OR LOWER(a.art_name) LIKE LOWER('%"+req.params.input+"%') AND s.enabled = true");
+    const response = await pool.query("SELECT id_song, song_name, genre, url, art_name FROM song s INNER JOIN artist a ON s.id_artist = a.id_artist WHERE LOWER(s.song_name) LIKE LOWER('%"+req.params.input+"%') OR LOWER(a.art_name) LIKE LOWER('%"+req.params.input+"%') AND s.enabled = true");
     res.json({rows: response.rows});
 }
 
 const getSearchSongsByGenre = async (req, res) => {
-    const response = await pool.query("SELECT * FROM song WHERE genre = $1", [req.params.genre]);
+    const response = await pool.query("SELECT id_song, song_name, genre, url, art_name FROM song s INNER JOIN artist a ON s.id_artist = a.id_artist WHERE genre LIKE LOWER('%"+req.params.genre+"%') AND enabled=true");
     res.json({rows: response.rows});
 }
 

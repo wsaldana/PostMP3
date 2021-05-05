@@ -17,3 +17,11 @@ def register(username, password):
         return response.json()
     except:
         return None
+
+def seachSong(inputSong):
+    response = requests.get(f"http://localhost:3000/search/{inputSong}")
+    response2 = requests.get(f"http://localhost:3000/searchgenre/{inputSong}")
+    try:
+        return response.json()['rows'] + response2.json()['rows']
+    except:
+        return None
