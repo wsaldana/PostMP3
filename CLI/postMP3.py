@@ -41,7 +41,17 @@ while True:
         print("\nGracias por ser parte de nuestra comunidad.")
         usuario = input("Nombre de usuario: ")
         contra = input("Ingrese su contraseña: ") 
-        contra2 = input("Repita su contraseña: ") 
+        contra2 = input("Repita su contraseña: ")
+
+        if(contra == contra2):
+            user_data = controller.register(usuario,contra) 
+            if(user_data):
+                print("\n/ * Bienvenido ", user_data['username'], " * /")
+                break
+            else:
+                print("\Ocurrió un problema al registrarse.\n")
+        else:
+            print("\nSus contraseñas no coinciden. \n")
 
 while(True):
     try:

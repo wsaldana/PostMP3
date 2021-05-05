@@ -7,4 +7,13 @@ def login(username, password):
     except:
         return None
         
-    
+def register(username, password):
+    parameters = {
+        "username": username,
+        "password": password
+    }
+    response = requests.post("http://localhost:3000/users", params=parameters)
+    try:
+        return response.json()
+    except:
+        return None

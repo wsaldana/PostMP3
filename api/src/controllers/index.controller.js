@@ -27,13 +27,9 @@ const getUserByUsername = async(req, res) => {
 
 const addUser = async (req, res) => {
     const {username, password} = req.query;
-    const response = await pool.query("INSERT INTO Usuario(username,contrasena) VALUES ($1, $2)", [username, password]);
-    res.json({
-        message: 'User added',
-        body: {
-            user: {username,password}
-        }
-    })
+    await pool.query("INSERT INTO Usuario(username,contrasena) VALUES ($1, $2)", [username, password]);
+    const select_response = await pool.query("SELECT id_user, username FROM Usuario WHERE username=$1 AND contrasena=$2", [username, password]);
+    res.json(select_response.rows[0]);
 };
 
 /** SONGS ------------------------------------------------------------------------------------------------------------------------------------*/
