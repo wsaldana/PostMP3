@@ -6,7 +6,11 @@ Bases de Datos
 @author Abraham Gutierrez #19111
 Proyecto 2
 '''
-print(" |-------------------------------|")
+
+import controller
+import json
+
+print("\n |-------------------------------|")
 print(" |     * PROYECTO2 postMP3 *     |")
 print(" |_______________________________|")
 print(" |    Walter Saldaña #19897      |")
@@ -14,20 +18,30 @@ print(" |    Carlos Ráxtum #19721       |")
 print(" |    Abraham Gutierrez #19111   |")
 print(" |_______________________________| \n")
 
-print("Ingrese una de las siguientes opciones: ")
-o = input("\t1) Login \n\t2) Registrarse\n")
 
 user_data = {}
 
-if(o == "1"):
-    print("\nPor favor ingrese sus credenciales.")
-    usuario = input("Usuario: ")
-    contra = input("Contraseña: ")
-elif(o == "2"):
-    print("\nGracias por ser parte de nuestra comunidad.")
-    usuario = input("Nombre de usuario: ")
-    contra = input("Ingrese su contraseña: ") 
-    contra2 = input("Repita su contraseña: ") 
+while True:
+    print("Ingrese una de las siguientes opciones: ")
+    o = input("\t1) Login \n\t2) Registrarse\n")
+
+    if(o == "1"):
+        print("\nPor favor ingrese sus credenciales.")
+        usuario = input("Usuario: ")
+        contra = input("Contraseña: ")
+
+        user_data = controller.login(usuario,contra)
+        if(user_data):
+            print("\n/ * Bienvenido ", user_data['username'], " * /")
+            break
+        else:
+            print("\nCredenciales incorrectos.\n")
+
+    elif(o == "2"):
+        print("\nGracias por ser parte de nuestra comunidad.")
+        usuario = input("Nombre de usuario: ")
+        contra = input("Ingrese su contraseña: ") 
+        contra2 = input("Repita su contraseña: ") 
 
 while(True):
     try:
@@ -175,7 +189,7 @@ while(True):
                 else:
                     print("siga compa")
         elif op == 5:
-            print("Esperemos vuelva pronto")
+            print("\nEsperemos vuelva pronto\n")
             exit()
         else:
             print('opcion no valida')
