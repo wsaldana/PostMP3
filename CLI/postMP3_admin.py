@@ -23,7 +23,13 @@ while(True):
         print("\t2) Buscar Artista")
         print("\t3) Buscar Album")
         print("\t4) Generar Reporte")
-        print("\t5) Cerrar")  
+        #proyecto parte2
+        print("\t5) Ingreso de Monitores")
+        print("\t6) Cálculo de comisiones para artistas")
+        print("\t7) Bitácora de operaciones en el sistema")
+        print("\t8) Reportería (reportes personalisados/nuevos)")
+        #proyecto parte2
+        print("\t9) Cerrar")  
         op = int(input("Ingrese una opcion: "))
         if op == 1:
             print("\tBUSCAR.....") #Menu buscar
@@ -250,8 +256,138 @@ while(True):
                     print('opcion no valida')
             except ValueError: 
                 print('Por favor, ingresar numeros enteros')
-                print("")                    
+                print("")
+        #pROYECTO PARTE2
         elif op == 5:
+            print("\tAQUI SE DARA INGRESO AL TIPO DE MONITOR PARA ELABORAR SUS TAREAS.....")
+            print("\t¿Qué monitor eres?.....") #Menu buscar
+            print("\t\t1) MonitorA")
+            print("\t\t2) MonitorB")
+            print("\t\t3) MonitorC")
+            print("\t\t4) Regresar a Menu Principal")
+            opc = int(input("Ingrese una opcion: "))
+            try:
+                if opc == 1:#al monitor A se le asignan los incisos 1,2,3
+                    print("\tBIENVENIDO MONITOR_A")
+                    print("\t¿Qué desea hacer?")
+                    print("\t\t1) Modificar la información de cualquier track y álbum del catálogo")
+                    print("\t\t2) Desactivar tracks y álbumes")
+                    print("\t\t3) Desactivar usuarios sin suscripción para que ya nopuedan acceder a la plataforma")
+                    print("\t\t4) regresar a menu principal")
+                    opci=int(input("Ingrese una opcion: "))
+                    try:
+                        if opci == 1:
+                            print("información de cualquier track y álbum del catálogo Actualizado")
+                        elif opci == 2:
+                            print("Desactivar tracks y album con exito")
+                        elif opci == 3:
+                            print("usuarios sin suscripción actualizado")
+                        elif opci == 4:
+                            print("regresar a menu principal")
+                        else:
+                            print('opcion no valida')
+                    except ValueError:
+                        print('Por favor, ingresar numeros enteros')
+                        print("")
+                elif opc == 2: #al monitor B se le asignan los incisos 4,5,6
+                    print("\tBIENVENIDO MONITOR_B")
+                    print("\t¿Qué desea hacer?")
+                    print("\t\t1) Eliminar suscripciones de usuarios")
+                    print("\t\t2) Desactivar usuarios registrados como artistas")
+                    print("\t\t3) Asociar un usuario existente a un perfiles de monitoreo")
+                    print("\t\t4) regresar a menu principal")
+                    opci=int(input("Ingrese una opcion: "))
+                    try:
+                        if opci == 1:
+                            print("Eliminar suscripciones de usuarios, proceso exitoso")
+                        elif opci == 2:
+                            print("Desactivar usuarios registrados como artistas, proceso exitoso")
+                        elif opci == 3:
+                            print("Asociar un usuario existente a un perfiles de monitoreo, proceso exitoso")
+                        elif opci == 4:
+                            print("regresar a menu principal")
+                        else:
+                            print('opcion no valida')
+                    except ValueError:
+                        print('Por favor, ingresar numeros enteros')
+                        print("")
+                elif opc == 3: #al monitor C se le asignan los incisos 7,8
+                    print("\tBIENVENIDO MONITOR_C")
+                    print("\t¿Qué desea hacer?")
+                    print("\t\t1) Eliminar suscripciones de usuarios")
+                    print("\t\t2) Desactivar usuarios registrados como artistas")
+                    print("\t\t3) regresar a menu principal")
+                    opci=int(input("Ingrese una opcion: "))
+                    try:
+                        if opci == 1:
+                            print("Generar los reportes ofrecidos por la plataforma")
+                        elif opci == 2:
+                            print("Consulta de bitácora de operaciones")
+                        elif opci == 3:
+                            print("regresar a menu principal")
+                        else:
+                            print('opcion no valida')
+                    except ValueError:
+                        print('Por favor, ingresar numeros enteros')
+                        print("")
+                elif opc == 4:
+                    print("regresar a menu principal")
+                else:
+                    print('opcion no valida')
+            except ValueError: 
+                print('Por favor, ingresar numeros enteros')
+                print("")
+
+        elif op == 6:# Cálculo de comisiones para artistas
+            print("\tComisiones") 
+            print("\t\t1) Reporte de comisiones")
+        elif op == 7:# Bitácora de operaciones en el sistema
+            print("\tBitacora de operaciones") 
+            print("\t¿Qué desea hacer?")
+            print("\t\t1) Bitacora de creacion")
+            print("\t\t2) Bitacora de modificación")
+            print("\t\t3) Bitacora de eliminación ")
+            print("\t\t4) regresar a menu principal")
+            opci=int(input("Ingrese una opcion: "))
+            try:
+                if opci == 1:
+                    print(" Bitacora de creacion")
+                elif opci == 2:
+                    print("Bitacora de modificación")
+                elif opci == 3:
+                    print("Bitacora de eliminación")
+                elif opci == 4:
+                    print("regresar a menu principal")
+                else:
+                    print('opcion no valida')
+            except ValueError:
+                print('Por favor, ingresar numeros enteros')
+                print("")
+        elif op == 8:# Ampliación de reportería
+            print("\tBitacora de operaciones") 
+            print("\t¿Qué desea hacer?")
+            print("\t\t1) Total de reproducciones por semana dado un rango de fechas a ser ingresado por el usuario")
+            print("\t\t2) Los N artistas con las mayores reproducciones para un rango de fechas a ser ingresado por el usuario. La cantidad de artistas N a mostrar también debe ser ingresada por el usuario.")
+            print("\t\t3) Total de reproducciones por género para un rango de fechas a ser ingresado por el usuario ")
+            print("\t\t4) Las N canciones con más reproducciones para un artista a ser ingresado por el usuario")
+            print("\t\t5) regresar a menu principal")
+            opci=int(input("Ingrese una opcion: "))
+            try:
+                if opci == 1:
+                    print(" Reporte 1")
+                elif opci == 2:
+                    print("Reporte 2")
+                elif opci == 3:
+                    print("Reporte 3")
+                elif opci == 4:
+                    print("Reporte 4")
+                else:
+                    print('opcion no valida')
+            except ValueError:
+                print('Por favor, ingresar numeros enteros')
+                print("")
+        #PoryectoParete2
+        elif op == 9:
             print("Esperemos vuelva pronto")
             exit()
         else:
