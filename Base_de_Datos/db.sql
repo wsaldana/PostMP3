@@ -471,4 +471,5 @@ LANGUAGE plpgsql;
 SELECT * FROM ranking(3);
 
 
-
+UPDATE song SET url = 'https://youtu.be/JUxITamPWrY' WHERE song_name = 'la santa';
+SELECT * FROM song 
