@@ -71,6 +71,7 @@ while(True):
             print("\t\t4) Regresar a Menu Principal")
             opc = int(input("Ingrese una opcion: "))
             try:
+
                 if opc == 1:
                     cancion = input("INGRESE SUS PARÁMETROS DE BUSQUEDA: ")
                     res_busqueda = controller.seachSong(cancion)
@@ -88,33 +89,67 @@ while(True):
                     except ValueError:
                         print('Por favor, ingresar numeros enteros')
                         print("")
+
                 elif opc == 2:
-                        print("\t¿DESEA VER CANCIONES?")
-                        print("\t\t1) SI")
-                        print("\t\t2) Regresar al menu")
-                        opci=int(input("Ingrese una opcion"))
-                        try:
-                            if opci == 1:
-                                print("canciones")
-                            elif opci == 2:
-                                print("regresar a menu principal")
-                            else:
-                                print('opcion no valida')
-                        except ValueError:
-                            print('Por favor, ingresar numeros enteros')
-                            print("")
-                elif opc == 3:
-                    print("\t¿DESEA VER CANCIONES?")
-                    print("\t\t1) SI")
-                    print("\t\t2) Regresar al menu")
-                    opci=int(input("Ingrese una opcion"))
+                    album = input("INGRESE SUS PARÁMETROS DE BUSQUEDA: ")
+                    res_busqueda = controller.searchAlbum(album)
+                    for i in range(len(res_busqueda)):
+                        print("\t",i+1, ") ", res_busqueda[i]['album_name'], " - ", res_busqueda[i]['art_name'])
+                    print("\n\t¿DESEA ABRIR UN ALBUM?")
+                    print("\t\t- Ingrese el número del album")
+                    print("\t\t- Ingrese 'q' para regresar el menú")
+                    opci=input("\tIngrese una opcion: ")
                     try:
-                        if opci == 1:
-                            print("canciones")
-                        elif opci == 2:
+                        if opci == "q":
                             print("regresar a menu principal")
                         else:
-                            print('opcion no valida')
+                            canciones_album = controller.searchAlbumSongs(res_busqueda[int(opci)-1]['id_album'])['rows']
+                            for i in range(len(canciones_album)):
+                                print("\t",i+1, ") ", canciones_album[i]['song_name'], " - ", canciones_album[i]['art_name'], ". [", canciones_album[i]['genre'], "]")
+                            print("\n\t¿DESEA REPRODUCIR UNA CANCION?")
+                            print("\t\t- Ingrese el número de la canción")
+                            print("\t\t- Ingrese 'q' para regresar el menú")
+                            opci=input("\tIngrese una opcion: ")
+                            try:
+                                if opci == "q":
+                                    print("regresar a menu principal")
+                                else:
+                                    print("Reproduciendo '", canciones_album[int(opci)-1]['song_name'], "': ", canciones_album[int(opci)-1]['url'])
+                            except ValueError:
+                                print('Por favor, ingresar numeros enteros')
+                                print("")
+                    except ValueError:
+                        print('Por favor, ingresar numeros enteros')
+                        print("")
+
+                elif opc == 3:
+                    playlist = input("INGRESE SUS PARÁMETROS DE BUSQUEDA: ")
+                    res_busqueda = controller.searchPlaylist(playlist)
+                    for i in range(len(res_busqueda)):
+                        print("\t",i+1, ") ", res_busqueda[i]['playlist_name'], " - ", res_busqueda[i]['username'])
+                    print("\n\t¿DESEA ABRIR UNA PLAYLIST?")
+                    print("\t\t- Ingrese el número de la playlist")
+                    print("\t\t- Ingrese 'q' para regresar el menú")
+                    opci=input("\tIngrese una opcion: ")
+                    try:
+                        if opci == "q":
+                            print("regresar a menu principal")
+                        else:
+                            canciones_playlist = controller.searchPlaylistSongs(res_busqueda[int(opci)-1]['id_playlist'])['rows']
+                            for i in range(len(canciones_playlist)):
+                                print("\t",i+1, ") ", canciones_playlist[i]['song_name'], " - ", canciones_playlist[i]['art_name'], ". [", canciones_playlist[i]['genre'], "]")
+                            print("\n\t¿DESEA REPRODUCIR UNA CANCION?")
+                            print("\t\t- Ingrese el número de la canción")
+                            print("\t\t- Ingrese 'q' para regresar el menú")
+                            opci=input("\tIngrese una opcion: ")
+                            try:
+                                if opci == "q":
+                                    print("regresar a menu principal")
+                                else:
+                                    print("Reproduciendo '", canciones_playlist[int(opci)-1]['song_name'], "': ", canciones_playlist[int(opci)-1]['url'])
+                            except ValueError:
+                                print('Por favor, ingresar numeros enteros')
+                                print("")
                     except ValueError:
                         print('Por favor, ingresar numeros enteros')
                         print("")

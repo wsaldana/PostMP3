@@ -131,14 +131,14 @@ DROP TABLE IF EXISTS Playlist;
 --CREAR TABLA PLAYLIST
 create table Playlist (
 	id_playlist SERIAL NOT NULL PRIMARY KEY,
-	paylist_name varchar(25),
+	playlist_name varchar(25),
 	id_user int
 );
 ALTER TABLE playlist  ADD FOREIGN KEY (id_user) REFERENCES usuario (id_user);
 --LLENAR TABLA PLAYLIST 
 insert into Playlist values(default,'RegionalMex',14);
 insert into Playlist values(default,'Rock',15);
-insert into Playlist values(default,'Español',15);
+insert into Playlist values(default,'Espaï¿½ol',15);
 insert into Playlist values(default,'BadBunnyMix',1);
 insert into Playlist values(default,'ArjonaMix',16);
 insert into Playlist values(default,'JBalvinMix',2);
@@ -302,18 +302,18 @@ AND (current_date - r.date_req) < 1
 -- -----------------------------Lab 10
 
 -- Ejercicio 1
-CREATE OR REPLACE FUNCTION trends(mes1 VARCHAR, año1 INT)
-RETURNS TABLE (año FLOAT,mes FLOAT,genre VARCHAR,nreq INT8)
+CREATE OR REPLACE FUNCTION trends(mes1 VARCHAR, aï¿½o1 INT)
+RETURNS TABLE (aï¿½o FLOAT,mes FLOAT,genre VARCHAR,nreq INT8)
 AS $$
 BEGIN
 		
-	IF (año1<2020 or año1>2022) THEN
-			raise exception 'Año invalido' USING ERRCODE='22007';
+	IF (aï¿½o1<2020 or aï¿½o1>2022) THEN
+			raise exception 'Aï¿½o invalido' USING ERRCODE='22007';
 	END IF;
 	     
 	RETURN QUERY(
 		SELECT 
-			EXTRACT(YEAR FROM r.date_req) AS año,
+			EXTRACT(YEAR FROM r.date_req) AS aï¿½o,
 			EXTRACT(MONTH FROM r.date_req) AS mes,
 			s.genre, 
 			COUNT(*) as nreq
@@ -321,7 +321,7 @@ BEGIN
 		ON s.id_song = r.id_song
 		WHERE 
 			EXTRACT(MONTH FROM r.date_req) = EXTRACT(MONTH FROM TO_DATE(mes1, 'Month'))
-			AND EXTRACT(YEAR FROM r.date_req) = año1
+			AND EXTRACT(YEAR FROM r.date_req) = aï¿½o1
 		GROUP BY s.genre, r.date_req
 		ORDER BY nreq DESC
 	);
@@ -343,7 +343,7 @@ RETURNS TABLE (artista VARCHAR, album VARCHAR, track VARCHAR, reproducciones INT
 AS $$
 BEGIN
 	IF (SELECT COUNT(*) FROM album WHERE id_album = id) <1 THEN 
-		RAISE EXCEPTION 'No existe el álbum solicitado';
+		RAISE EXCEPTION 'No existe el ï¿½lbum solicitado';
 	END IF;
 	     
 	RETURN QUERY(

@@ -3,7 +3,7 @@ const router = Router();
 
 const {getLogin, getUsers, getUserByUsername, addUser, 
     getSongs, getSongsByName,
-    getSearchSongs, getSearchSongsByGenre, addSong, updateSong, deleteSong,
+    getSearchSongs, getSearchSongsByGenre, getSearchSongsByAlbum, getSearchSongsByPlaylist, addSong, updateSong, deleteSong,
     getArtists, getArtistByName, addArtist, updateArtist, deleteArtist,
     getAlbums,getAlbumByName,addAlbum, updateAlbum, deleteAlbum,
     getPlaylists, getPlaylistByName,addPlaylist, savesSongToPlaylist,
@@ -19,6 +19,8 @@ router.get('/songs', getSongs);
 router.get('/songs/:name', getSongsByName);
 router.get('/search/:input', getSearchSongs);
 router.get('/searchgenre/:genre', getSearchSongsByGenre)
+router.get('/searchalbum/:id_album', getSearchSongsByAlbum)
+router.get('/searchplaylist/:id_playlist', getSearchSongsByPlaylist)
 router.get('/populargenres', getPopularGenres)
 
 router.get('/artists', getArtists)

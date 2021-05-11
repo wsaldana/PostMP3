@@ -1,12 +1,7 @@
 const {Pool} = require('pg');
+const parameters = require('../config/postgres.config');
 
-const pool = new Pool({
-    host: 'localhost',
-    user: 'postgres',
-    password: 'gMzQQ2M7J2SD',
-    database: 'postmp3',
-    port: '5432'
-});
+const pool = new Pool(parameters);
 
 const getLogin = async (req, res) => {
     const {username, password} = req.params
@@ -50,6 +45,16 @@ const getSearchSongs = async (req, res) => {
 
 const getSearchSongsByGenre = async (req, res) => {
     const response = await pool.query("SELECT id_song, song_name, genre, url, art_name FROM song s INNER JOIN artist a ON s.id_artist = a.id_artist WHERE genre LIKE LOWER('%"+req.params.genre+"%') AND enabled=true");
+    res.json({rows: response.rows});
+}
+
+const getSearchSongsByAlbum = async (req, res) => {
+    const response = await pool.query("SELECT s.*, a.art_name FROM song s INNER JOIN artist a ON s.id_artist = a.id_artist WHERE s.id_album = $1 AND enabled=true", [req.params.id_album]);
+    res.json({rows: response.rows});
+}
+
+const getSearchSongsByPlaylist = async (req, res) => {
+    const response = await pool.query("SELECT sa.* FROM (song s INNER JOIN artist a ON s.id_artist = a.id_artist) AS sa INNER JOIN playlist_song p ON p.id_song = sa.id_song WHERE p.id_playlist = $1 AND enabled=true", [req.params.id_playlist]);
     res.json({rows: response.rows});
 }
 
@@ -153,8 +158,8 @@ const getAlbums = async (req, res) => {
 }
 
 const getAlbumByName = async (req, res) => {
-    const response = await pool.query("SELECT * FROM Album WHERE LOWER(album_name) LIKE '%"+req.params.name+"%'");
-    res.json(response.rows[0]);
+    const response = await pool.query("SELECT a.*, t.art_name FROM Album a INNER JOIN artist t ON a.id_artist = t.id_artist WHERE LOWER(a.album_name) LIKE '%"+req.params.name+"%'");
+    res.json(response.rows);
 }
 
 const addAlbum = async (req, res) => {
@@ -202,8 +207,8 @@ const getPlaylists = async (req, res) => {
 }
 
 const getPlaylistByName = async (req, res) => {
-    const response = await pool.query("SELECT * FROM Playlist WHERE LOWER(playlist_name) LIKE '%"+req.params.name+"%'");
-    res.json(response.rows[0]);
+    const response = await pool.query("SELECT p.*, u.username FROM Playlist p INNER JOIN Usuario u ON p.id_user = u.id_user WHERE LOWER(playlist_name) LIKE '%"+req.params.name+"%'");
+    res.json(response.rows);
 }
 
 const addPlaylist = async (req, res) => {
@@ -292,6 +297,8 @@ module.exports = {
     getSongsByName,
     getSearchSongs, 
     getSearchSongsByGenre,
+    getSearchSongsByAlbum,
+    getSearchSongsByPlaylist,
     addSong,
     updateSong,
     deleteSong,

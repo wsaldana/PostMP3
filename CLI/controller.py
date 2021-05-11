@@ -25,3 +25,31 @@ def seachSong(inputSong):
         return response.json()['rows'] + response2.json()['rows']
     except:
         return None
+    
+def searchAlbum(inputAlbum):
+    response = requests.get(f"http://localhost:3000/albums/{inputAlbum}")
+    try:
+        return response.json()
+    except:
+        return None
+
+def searchAlbumSongs(id_album):
+    response = requests.get(f"http://localhost:3000/searchalbum/{id_album}")
+    try:
+        return response.json()
+    except:
+        return None
+
+def searchPlaylist(inputPlaylist):
+    response = requests.get(f"http://localhost:3000/playlists/{inputPlaylist}")
+    try:
+        return response.json()
+    except:
+        return None
+
+def searchPlaylistSongs(id_playlist):
+    response = requests.get(f"http://localhost:3000/searchplaylist/{id_playlist}")
+    try:
+        return response.json()
+    except:
+        return None
