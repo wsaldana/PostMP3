@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS Usuario CASCADE;
 
 --CREAR TABLA
 create table Monitor(
-    id_monitor int PRIMARY KEY,
+    id_monitor SERIAL PRIMARY KEY,
     tipo varchar(2) NOT NULL,
     r1 boolean DEFAULT false,
     r2 boolean DEFAULT false,
@@ -20,22 +20,22 @@ insert into Monitor values(2,'B',false,false,false,true,true,true,false,false);
 
 --CREAR TABLA MANAGER
 create table Manager (
-	id_manager int NOT NULL PRIMARY KEY,
+	id_manager SERIAL NOT NULL PRIMARY KEY,
 	date_sub date,
 	enabled boolean default true
 );
-ALTER TABLE Manager ADD FOREIGN KEY (id_manager) REFERENCES Usuario(id_user);
+
 --LLENAR TABLA MANAGER 
-insert into Manager values(9,'2015-11-28',true);
-insert into Manager values(10,'2010-05-25',true);
-insert into Manager values(11,'2015-04-20',true);
-insert into Manager values(12,'1980-03-26',true);
-insert into Manager values(13,'2000-01-28',true);
+insert into Manager values(default,'2015-11-28',true);
+insert into Manager values(default,'2010-05-25',true);
+insert into Manager values(default,'2015-04-20',true);
+insert into Manager values(default,'1980-03-26',true);
+insert into Manager values(default,'2000-01-28',true);
 
 DROP TABLE IF EXISTS Artist CASCADE;
 --CREAR TABLA ARTIST
 create table Artist (
-	id_artist int NOT NULL PRIMARY KEY,
+	id_artist SERIAL NOT NULL PRIMARY KEY,
 	art_name varchar(25) NOT NULL UNIQUE,
 	date_sub date NOT NULL,
 	id_manager int,
@@ -44,14 +44,14 @@ create table Artist (
 
 ALTER TABLE Artist ADD FOREIGN KEY (id_manager) REFERENCES Manager(id_manager);
 --LLENAR TABLA ARTIST 
-insert into Artist values(1,'Bad Bunny','2016-11-28',9,true);
-insert into Artist values(2,'The Weeknd','2017-07-25',9,true);
-insert into Artist values(3,'Dua Lipa','2016-04-20',9,true);
-insert into Artist values(4,'J Balvin','2014-01-01',10,true);
-insert into Artist values(5,'Ricardo Arjona','2010-06-18',10,true);
-insert into Artist values(6,'Christian Nodal','2015-09-25',11,true);
-insert into Artist values(7,'Queen','1980-04-20',12,true);
-insert into Artist values(8,'Guns and Roses','2000-05-10', 13,true);
+insert into Artist values(default,'Bad Bunny','2016-11-28',1,true);
+insert into Artist values(default,'The Weeknd','2017-07-25',2,true);
+insert into Artist values(default,'Dua Lipa','2016-04-20',3,true);
+insert into Artist values(default,'J Balvin','2014-01-01',1,true);
+insert into Artist values(default,'Ricardo Arjona','2010-06-18',4,true);
+insert into Artist values(default,'Christian Nodal','2015-09-25',5,true);
+insert into Artist values(default,'Queen','1980-04-20',2,true);
+insert into Artist values(default,'Guns and Roses','2000-05-10', 1,true);
 
 --CREAR TABLA USER
 create table Usuario(
@@ -274,7 +274,7 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
-select * from desactivar_cancion('safaera') ---Prueba
+select * from desactivar_cancion('safaera'); ---Prueba
 
 CREATE OR REPLACE FUNCTION desactivar_album(nombre_insertado varchar)
 RETURNS void
@@ -291,10 +291,10 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
-select * from desactivar_album('After Hours') ---Prueba
+select * from desactivar_album('After Hours'); ---Prueba
 
 ---3.Desactivar usuarios sin suscripción para que ya no puedan acceder a la plataforma
-drop function desactivar_usuario
+--drop function desactivar_usuario
 CREATE OR REPLACE FUNCTION desactivar_usuario(id_insertado int)
 RETURNS VOID
 AS $$
@@ -309,7 +309,7 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
-select * from desactivar_usuario(17) --- Prueba
+--select * from desactivar_usuario(17); --- Prueba
 
 ---4.Eliminar suscripciones de usuarios
 CREATE OR REPLACE FUNCTION eliminar_suscripcion(id_insertado int)
@@ -330,10 +330,10 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
-select * from eliminar_suscripcion(15) ---Prueba
+--select * from eliminar_suscripcion(15); ---Prueba
 
 ---5.Desactivar usuarios registrados como artistas
-drop function desactivar_artista
+--drop function desactivar_artista
 CREATE OR REPLACE FUNCTION desactivar_artista(nombre_insertado varchar)
 RETURNS VOID
 AS $$
@@ -345,7 +345,7 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
-select * from desactivar_artista('Bad Bunny') ---Prueba 
+select * from desactivar_artista('Bad Bunny'); ---Prueba 
 
 ---------------------------------------BITACORA---------------------------------------------------
 create table Bitacora (
@@ -353,11 +353,11 @@ create table Bitacora (
 	accion varchar(20) not null,
 	tabla varchar(30) not null,
 	fecha_hora TIMESTAMP not null
-)
-drop table Bitacora cascade
+);
+--drop table Bitacora cascade;
 
 --------------------------------------*ARTISTAS*-------------------------------------------------------------------
-drop function bitacora_artista() cascade
+--drop function bitacora_artista() cascade
 
 create function bitacora_artista() 
 returns Trigger
@@ -384,7 +384,7 @@ for each row
 execute procedure bitacora_artista();
 
 --------------------------------------*MANAGERS*-------------------------------------------------------------------
-drop function bitacora_manager() cascade
+--drop function bitacora_manager() cascade
 
 create function bitacora_manager() 
 returns Trigger
@@ -411,7 +411,7 @@ for each row
 execute procedure bitacora_manager();
 
 --------------------------------------*USUARIOS*-------------------------------------------------------------------
-drop function bitacora_manager() cascade
+--drop function bitacora_manager() cascade
 
 create function bitacora_usuario() 
 returns Trigger
@@ -517,7 +517,7 @@ select ar.art_name, count(re.id_request) as reproducciones, count(re.id_request)
 from song so, request re, artist ar, usuario usu
 where so.id_artist = ar.id_artist and so.id_song = re.id_song and re.id_user = usu.id_user and usu.id_user <> ar.id_artist
 group by  ar.art_name
-order by reproducciones desc
+order by reproducciones desc;
 
 
 -------------------------------------------MONITOREO----------------------------------------------
@@ -525,23 +525,24 @@ order by reproducciones desc
 --insert into Monitor values(3,'C',false,false,false,false,false,false,true,true);
 
 --Insertar nuevo monitor
-drop function IF EXISTS insert_monitor CASCADE
-create function insert_monitor()
+--drop function IF EXISTS insert_monitor CASCADE
+/*create function insert_monitor()
 returns trigger 
 language PLPGSQL as $$
 BEGIN
-	insert into Monitor values (new.id_monitor, new.tipo, new.r1, new.r2, new.r3, new.r4, new.r5, new.r6, new.r7, new.r8);
+	insert into Monitor values (default, new.tipo, new.r1, new.r2, new.r3, new.r4, new.r5, new.r6, new.r7, new.r8);
 	return new;
 End
-$$
+$$;
+
 Create trigger t_insert_monitor
 after insert on Monitor
 for each row
-execute procedure insert_monitor()
-insert into Monitor(id_monitor, tipo, r1, r2, r3, r4, r5, r6, r7, r8) values (3,'C',false,false,false,false,false,false,true,true);
+execute procedure insert_monitor();
+insert into Monitor values (default,'C',false,false,false,false,false,false,true,true);
 
 ---Ingresar (actualizar el id_monitor del usuario)
-drop function IF EXISTS update_id_monitor CASCADE
+--drop function IF EXISTS update_id_monitor CASCADE
 create or replace function update_id_monitor()
 returns trigger 
 language PLPGSQL as $$
@@ -549,17 +550,18 @@ BEGIN
 	update usuario set id_monitor = new.id_monitor where id_user = OLD.id_user;
 	return new;
 End
-$$
+$$;
 Create trigger t_update_id_monitor
 instead of update on NewMonitor
-for each row execute procedure update_id_monitor()
+for each row execute procedure update_id_monitor();
 
-update NewMonitor set id_monitor = 3 where id_user = 16
+update NewMonitor set id_monitor = 3 where id_user = 16;
+*/
 
 -----------------------------AMPLIACION DE REPORTERIA---------------------------------------------
 ---1.Total de reproducciones por semana dado un rango de fechas a ser ingresado por el usuario
 --- la deje por dia porque no hay suficientes datos
-drop FUNCTION Reporteria_1
+--drop FUNCTION Reporteria_1
 CREATE OR REPLACE FUNCTION Reporteria_1(fecha1 date, fecha2 date)
 RETURNS table (fecha text, reproducciones bigint)
 AS $$
@@ -574,7 +576,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-select fecha, reproducciones from Reporteria_1 ('2020-01-28','2021-09-26')
+select fecha, reproducciones from Reporteria_1 ('2020-01-28','2021-09-26');
 
 
 ---Ampliación de reportería
@@ -597,7 +599,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-select artistas, reproducciones from Reporteria_2 ('2020-01-28','2021-09-26', 4)
+select artistas, reproducciones from Reporteria_2 ('2020-01-28','2021-09-26', 4);
 
 
 ---Ampliación de reportería
@@ -617,7 +619,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-select genero, reproducciones from Reporteria_3 ('2020-01-28','2021-09-26')
+select genero, reproducciones from Reporteria_3 ('2020-01-28','2021-09-26');
 
 ---Ampliación de reportería
 ---4. Las N canciones con más reproducciones para un artista a ser ingresado por el usuario.
@@ -637,4 +639,4 @@ END;
 $$
 LANGUAGE plpgsql;
 
-select song, reproducciones from Reporteria_4 ('Bad Bunny', 3)
+select song, reproducciones from Reporteria_4 ('Bad Bunny', 3);
