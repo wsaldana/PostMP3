@@ -5,7 +5,7 @@ const pool = new Pool(parameters);
 
 const getLogin = async (req, res) => {
     const {username, password} = req.params
-    const response = await pool.query("SELECT id_user, username FROM Usuario WHERE username=$1 AND contrasena=$2", [username, password]);
+    const response = await pool.query("SELECT id_user, username, id_artist, id_manager, id_monitor FROM Usuario WHERE username=$1 AND contrasena=$2", [username, password]);
     res.json(response.rows[0]);
 }
 
@@ -110,16 +110,18 @@ const getArtists = async (req, res) => {
 
 const getArtistByName = async (req, res) => {
     const response = await pool.query("SELECT * FROM artist WHERE LOWER(art_name) LIKE '%"+req.params.name+"%'");
-    res.json(response.rows[0]);
+    res.json({rows: response.rows});
 }
 
 const addArtist = async (req, res) => {
-    const {id_artist, art_name, date_sub, id_manager} = req.query;
-    const response = await pool.query("INSERT INTO Artist VALUES($1,$2,$3,$4)", [id_artist, art_name, date_sub, id_manager]);
+    const {art_name, date_sub, id_manager, id_user} = req.body;
+    const response = await pool.query("INSERT INTO Artist VALUES(default,$1,$2,$3) RETURNING id_artist", [art_name, date_sub, id_manager]);
+    id = response.rows[0].id_artist;
+    await pool.query("UPDATE Usuario SET id_artist=$1 WHERE id_user=$2", [id,id_user]);
     res.json({
         message: 'Artist added',
         body: {
-            artist: {id_artist, art_name, date_sub, id_manager}
+            artist: {id_artist:id, art_name:art_name, date_sub:date_sub, id_manager:id_manager}
         }
     });
 }
@@ -166,7 +168,7 @@ const addAlbum = async (req, res) => {
     const {album_name, date_pub, id_artist} = req.query;
     const response = await pool.query("INSERT INTO Album VALUES(default,$1,$2,$3)", [album_name, date_pub, id_artist]);
     res.json({
-        message: 'Artist added',
+        message: 'Album added',
         body: {
             album: {album_name, date_pub, id_artist}
         }
@@ -212,18 +214,20 @@ const getPlaylistByName = async (req, res) => {
 }
 
 const addPlaylist = async (req, res) => {
-    const {paylist_name, id_user} = req.query;
-    const response = await pool.query("INSERT INTO Playlist VALUES(default,$1,$2)", [paylist_name, id_user]);
+    const {playlist_name, id_user} = req.body;
+    const response = await pool.query("INSERT INTO Playlist VALUES(default,$1,$2) RETURNING id_playlist", [playlist_name, id_user]);
+    id = response.rows[0].id_playlist;
+    console.log(id)
     res.json({
         message: 'Playlist created',
         body: {
-            playlist: {paylist_name, id_user}
+            playlist: {id_playlist:id, playlist_name:playlist_name, id_user:id_user}
         }
     });
 }
 
 const savesSongToPlaylist = async (req, res) => {
-    const {id_playlist, id_song} = req.query;
+    const {id_playlist, id_song} = req.body;
     const response = await pool.query("INSERT INTO Playlist_song VALUES(default,$1,$2)", [id_playlist, id_song]);
     res.json({
         message: 'Song added to playlist',
@@ -288,6 +292,12 @@ const getDailyUser = async (req, res) => {
     res.json(response.rows[0]);
 }
 
+/* ---------------------- Proyecto2 --------------------------- */
+const desactivarArtista = async (req, res) => {
+    const response = await pool.query("select * from desactivar_artista($1)", [req.params.nombre]);
+    res.json({message: "Se desactivo correctamente"});
+}
+
 module.exports = {
     getLogin,
     getUsers,
@@ -323,5 +333,6 @@ module.exports = {
     getPopularGenres, 
     getActiveUsers,
     getSubscripciones,
-    getDailyUser
+    getDailyUser, 
+    desactivarArtista
 };

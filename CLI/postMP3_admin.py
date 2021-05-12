@@ -6,6 +6,9 @@ Bases de Datos
 @author Abraham Gutierrez #19111
 Proyecto 2
 '''
+
+import controller
+
 print(" |-------------------------------|")
 print(" |     * PROYECTO2 postMP3 *     |")
 print(" |_______________________________|")
@@ -28,6 +31,7 @@ while(True):
         print("\t6) Cálculo de comisiones para artistas")
         print("\t7) Bitácora de operaciones en el sistema")
         print("\t8) Reportería (reportes personalisados/nuevos)")
+        print("\t10) Desactivar usuarios artistas")
         #proyecto parte2
         print("\t9) Cerrar")  
         op = int(input("Ingrese una opcion: "))
@@ -390,6 +394,10 @@ while(True):
         elif op == 9:
             print("Esperemos vuelva pronto")
             exit()
+        elif op == 10:
+            nombre = input("Nombre del artista: ")
+            mensaje = controller.desactivarArtista(nombre)
+            print(mensaje['message'])
         else:
             print('opcion no valida')
     except ValueError: 

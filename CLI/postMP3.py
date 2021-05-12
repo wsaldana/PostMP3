@@ -9,6 +9,7 @@ Proyecto 2
 
 import controller
 import json
+from datetime import date
 
 print("\n |-------------------------------|")
 print(" |     * PROYECTO2 postMP3 *     |")
@@ -20,6 +21,7 @@ print(" |_______________________________| \n")
 
 
 user_data = {}
+subscription = {}
 
 while True:
     print("Ingrese una de las siguientes opciones: ")
@@ -162,67 +164,75 @@ while(True):
                 print('Por favor, ingresar numeros enteros')
                 print("")
         elif op == 2:#Menu crear playlist
-            if True: # ¿Es premium?
-                print("\tCREAR PLAYLIST")
-                print("\t\t1) Pedir datos")
-                print("\t\t2) Buscar")
-                print("\t\t3) Agregar")
-                print("\t\t4) Regresar a Menu Principal")
-                opc = int(input("Ingrese una opcion: "))
-                try:
-                    if opc == 1:
-                        print("crear playlis -> pedir datos")
-                    elif opc == 2:
-                        print("crear playlis -> buscar")
-                    elif opc == 3:
-                        print("crear playlis -> agregar")
-                    elif opc == 4:
-                        print("regresar a menu principal")
-                    else:
-                        print('opcion no valida')
-                except ValueError: 
-                    print('Por favor, ingresar numeros enteros')
-                    print("")
+            if ((user_data['id_artist'] != None) or (user_data['id_manager'] != None)): # ¿Es premium?
+                print("\nCREAR PLAYLIST")
+                nombre_playlist = input("Ingrese nombre de la Playlist: ")
+                new_playlist = controller.addPlaylist(nombre_playlist, user_data['id_user'])
+                while True:
+                    cancion = input("Busque una cancion para agregar: ")
+                    res_busqueda = controller.seachSong(cancion)
+                    for i in range(len(res_busqueda)):
+                        print("\t",i+1, ") ", res_busqueda[i]['song_name'], " - ", res_busqueda[i]['art_name'], ". [", res_busqueda[i]['genre'], "]")
+                    print("\n\t¿DESEA AGREGAR UNA CANCION?")
+                    print("\t\t- Ingrese el número de la canción")
+                    print("\t\t- Ingrese 'q' para finalizar")
+                    opci=input("\tIngrese una opcion: ")
+                    try:
+                        if opci == "q":
+                            print("Creacion de playlist concluida.")
+                            break
+                        else:
+                            add = controller.addSongToPlaylist(new_playlist["body"]["playlist"]["id_playlist"], res_busqueda[int(opci)-1]['id_song'])
+                            if(add):
+                                print("cancion agregada.")
+                            else:
+                                print("No se pudo agregar la cancion.")
+                    except ValueError:
+                        print('Por favor, una opcion valida')
+                        print("")
             else:
-                print("mi loco dele pa fuera")
-                print("Manager")
-                print("Artista")
-                if True: #pedir datos de artista y manager
-                    print("pedir datos de artista ")
-                    print("pedir datos de manager ")
+                print("Pague suscripcion para acceder a esta funcion.")
+                print("Ingrese el rol de su cuenta: ")
+                print("\t1) Manager")
+                print("\t2) Artista")
+                print("\t3) Regresar")
+                rol = input("Ingrese una opcion: ")
+                print(rol)
+                if rol == "1": #pedir datos de artista y manager
+                    print("Ingrese el nombre de su artista: ")
+                elif rol == "2":
+                    nombre = input("Ingrese su nombre de artista: ")
+                    manager = input("Solicite con su manager su id: ")
+                    subscription = controller.addArtist(nombre, date.today().strftime("%Y-%m-%d"),int(manager), user_data['id_user'])['body']['artist']
+                    print("Se ha suscrito correctamente.")
+                    user_data['id_artist'] = subscription['id_artist']
                 else:
                     print("siga compa")
+
         elif op == 3:#Menu crear album
             if True: # ¿Es premium?
-                print("\tCREAR ALBUM")
-                print("\t\t1) Pedir datos")
-                print("\t\t2) Mis canciones")
-                print("\t\t3) Agregar")
-                print("\t\t4) Regresar a Menu Principal")
-                opc = int(input("Ingrese una opcion: "))
-                try:
-                    if opc == 1:
-                        print("crear album -> pedir datos")
-                    elif opc == 2:
-                        print("crear album -> mis canciones")
-                    elif opc == 3:
-                        print("crear album -> agregar")
-                    elif opc == 4:
-                        print("regresar a menu principal")
-                    else:
-                        print('opcion no valida')
-                except ValueError: 
-                    print('Por favor, ingresar numeros enteros')
-                    print("")
+                print("\nCREAR ALBUM")
+                nombre_playlist = input("Ingrese nombre del album: ")
+
             else:
-                print("mi loco dele pa fuera")
-                print("Manager")
-                print("Artista")
-                if True: #pedir datos de artista y manager
-                    print("pedir datos de artista ")
-                    print("pedir datos de manager ")
+                print("Pague suscripcion para acceder a esta funcion.")
+                print("Ingrese el rol de su cuenta: ")
+                print("\t1) Manager")
+                print("\t2) Artista")
+                print("\t3) Regresar")
+                rol = input("Ingrese una opcion: ")
+                print(rol)
+                if rol == "1": #pedir datos de artista y manager
+                    print("Ingrese el nombre de su artista: ")
+                elif rol == "2":
+                    nombre = input("Ingrese su nombre de artista: ")
+                    manager = input("Solicite con su manager su id: ")
+                    subscription = controller.addArtist(nombre, date.today().strftime("%Y-%m-%d"),int(manager), user_data['id_user'])['body']['artist']
+                    print("Se ha suscrito correctamente.")
+                    user_data['id_artist'] = subscription['id_artist']
                 else:
                     print("siga compa")
+
         elif op == 4:#Subir cancion
             if True: # ¿Es premium?
                 print("Usted a entrado a la funcion de subir cancion")

@@ -53,3 +53,31 @@ def searchPlaylistSongs(id_playlist):
         return response.json()
     except:
         return None
+
+def addPlaylist(name, id_user):
+    response = requests.post("http://localhost:3000/playlists", data={"playlist_name":name, "id_user":id_user})
+    try:
+        return response.json()
+    except:
+        return None
+
+def addSongToPlaylist(id_playlist, id_song):
+    response = requests.post("http://localhost:3000/addsongtoplaylist", data={"id_playlist":id_playlist, "id_song":id_song})
+    try:
+        return response.json()
+    except:
+        return None
+
+def addArtist(name, date_sub, manager, user):
+    response = requests.post("http://localhost:3000/artists", data={"art_name":name, "date_sub":date_sub, "id_manager":manager, "id_user":user}) 
+    try:
+        return response.json()
+    except:
+        return None
+
+def desactivarArtista(nombre):
+    response = requests.put(f"http://localhost:3000/desactivarartista/{nombre}") 
+    try:
+        return response.json()
+    except:
+        return None
