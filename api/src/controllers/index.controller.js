@@ -313,7 +313,20 @@ const ComisionesArtistas = async (req, res) => {
     res.json({rows: response.rows});
 }
 
+const desactivarUsuarioSS = async (req, res) => {
+    const response = await pool.query("select * from desactivar_usuario($1)", [req.params.id_usuario_insertado]);
+    res.json({message: "Se desactivo correctamente"});
+}
 
+const eliminarSuscripcion = async (req, res) => {
+    const response = await pool.query("select * from eliminar_suscripcion($1)", [req.params.id_usuario_insertado]);
+    res.json({message: "Se ha eliminado la suscripcion"});
+}
+
+const desactivarUsuarioA = async (req, res) => {
+    const response = await pool.query("select * from desactivar_artista($1)", [req.params.nombre]);
+    res.json({message: "Se ha desactivado el/la artista"});
+}
 
 module.exports = {
     getLogin,
@@ -354,5 +367,8 @@ module.exports = {
     desactivarArtista,
     desactivarCancion,
     desactivarAlbum,
-    ComisionesArtistas
+    ComisionesArtistas,
+    desactivarUsuarioSS,
+    eliminarSuscripcion,
+    desactivarUsuarioA
 };

@@ -421,15 +421,15 @@ while(True):
             print(mensaje['message'])
         elif op == 13:
             id_usuario_insertado = int(input("ID del usuario: "))
-            mensaje = controller.desactivarArtista(id_usuario_insertado)
+            mensaje = controller.desactivarUsuarioSS(id_usuario_insertado)
             print(mensaje['message'])
         elif op == 14:
             id_usuario_insertado = int(input("ID del usuario: "))
-            mensaje = controller.desactivarArtista(id_usuario_insertado)
+            mensaje = controller.eliminarSuscripcion(id_usuario_insertado)
             print(mensaje['message'])
         elif op == 15:
             nombre = input("Nombre del artista: ")
-            mensaje = controller.desactivarArtista(nombre)
+            mensaje = controller.desactivarUsuarioA(nombre)
             print(mensaje['message'])
         elif op == 16:
             print("Esperemos vuelva pronto")

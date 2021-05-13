@@ -89,4 +89,23 @@ def desactivarCancion(cancion):
     except:
         return None
 
+def desactivarUsuarioSS(id_usuario_insertado):
+    response = requests.put(f"http://localhost:3000/desactivarUsuarioSS/{id_usuario_insertado}") 
+    try:
+        return response.json()
+    except:
+        return None
 
+def eliminarSuscripcion(id_usuario_insertado):
+    response = requests.put(f"http://localhost:3000/eliminarSuscripcion/{id_usuario_insertado}") 
+    try:
+        return response.json()
+    except:
+        return None
+
+def desactivarUsuarioA(nombre):
+    response = requests.put(f"http://localhost:3000/desactivarUsuarioA/{nombre}") 
+    try:
+        return response.json()
+    except:
+        return None
