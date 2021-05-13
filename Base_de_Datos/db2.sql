@@ -39,7 +39,8 @@ create table Artist (
 	art_name varchar(25) NOT NULL UNIQUE,
 	date_sub date NOT NULL,
 	id_manager int,
-	enabled boolean DEFAULT true
+	enabled boolean DEFAULT true,
+	comision NUMERIC(10,2) DEFAULT 0.0
 );
 
 ALTER TABLE Artist ADD FOREIGN KEY (id_manager) REFERENCES Manager(id_manager);
@@ -341,11 +342,11 @@ BEGIN
 	update usuario
 	set enabled = false
 	from artist
-	where artist.id_artist = usuario.id_user and artist.art_name = nombre_insertado;
+	where artist.id_artist = usuario.id_artist and artist.art_name = nombre_insertado;
 END;
 $$
 LANGUAGE plpgsql;
-select * from desactivar_artista('Bad Bunny'); ---Prueba 
+select * from desactivar_artista('ccc'); ---Prueba 
 
 ---------------------------------------BITACORA---------------------------------------------------
 create table Bitacora (
@@ -512,14 +513,6 @@ AFTER INSERT OR UPDATE OR DELETE on song
 for each row
 execute procedure bitacora_tracks();
 
--------------------------------------------COMISIONES--------------------------------------------
-select ar.art_name, count(re.id_request) as reproducciones, count(re.id_request)*0.50 as ganacias
-from song so, request re, artist ar, usuario usu
-where so.id_artist = ar.id_artist and so.id_song = re.id_song and re.id_user = usu.id_user and usu.id_user <> ar.id_artist
-group by  ar.art_name
-order by reproducciones desc;
-
-
 -------------------------------------------MONITOREO----------------------------------------------
 
 --insert into Monitor values(3,'C',false,false,false,false,false,false,true,true);
@@ -562,6 +555,8 @@ update NewMonitor set id_monitor = 3 where id_user = 16;
 ---1.Total de reproducciones por semana dado un rango de fechas a ser ingresado por el usuario
 --- la deje por dia porque no hay suficientes datos
 --drop FUNCTION Reporteria_1
+CREATE INDEX CONCURRENTLY requests_date ON request (id_request,date_req);
+
 CREATE OR REPLACE FUNCTION Reporteria_1(fecha1 date, fecha2 date)
 RETURNS table (fecha text, reproducciones bigint)
 AS $$
@@ -583,6 +578,8 @@ select fecha, reproducciones from Reporteria_1 ('2020-01-28','2021-09-26');
 ---2. Los N artistas con las mayores reproducciones para un rango de fechas a ser ingresado
 --por el usuario. La cantidad de artistas N a mostrar también debe ser ingresada por el
 --usuario.
+CREATE INDEX artists_index ON artist (art_name);
+
 CREATE OR REPLACE FUNCTION Reporteria_2(fecha1 date, fecha2 date, can_artista int)
 RETURNS table (artistas varchar(25), reproducciones bigint)
 AS $$
@@ -604,6 +601,8 @@ select artistas, reproducciones from Reporteria_2 ('2020-01-28','2021-09-26', 4)
 
 ---Ampliación de reportería
 ---3. Total de reproducciones por género para un rango de fechas a ser ingresado por el usuario
+CREATE INDEX song_genre ON song (genre);
+
 CREATE OR REPLACE FUNCTION Reporteria_3(fecha1 date, fecha2 date)
 RETURNS table (genero varchar(30), reproducciones bigint)
 AS $$
@@ -640,3 +639,39 @@ $$
 LANGUAGE plpgsql;
 
 select song, reproducciones from Reporteria_4 ('Bad Bunny', 3);
+
+--UPDATE Usuario SET id_artist=NULL WHERE id_user=1;
+--UPDATE Usuario SET enabled=true WHERE id_user=1;
+SELECT * FROM usuario;
+SELECT * FROM artist a ;
+
+CREATE TABLE fondos(
+	dinero NUMERIC(10,2) NOT NULL
+);
+INSERT INTO fondos VALUES(500.75);
+
+CREATE TABLE pagos(
+	id_pago SERIAL NOT NULL PRIMARY KEY,
+	monto NUMERIC(10,2) NOT NULL,
+	date_payment DATE NOT NULL,
+	id_artist INT NOT NULL REFERENCES artist(id_artist)
+);
+
+-------------------------------------------COMISIONES--------------------------------------------
+BEGIN;
+	select ar.art_name, count(re.id_request) as reproducciones, count(re.id_request)*0.50 as ganacias
+	from song so, request re, artist ar, usuario usu
+	where so.id_artist = ar.id_artist and so.id_song = re.id_song and re.id_user = usu.id_user and usu.id_user <> ar.id_artist
+	group by  ar.art_name
+	order by reproducciones desc;
+
+select ar.art_name, count(re.id_request) as reproducciones, count(re.id_request)*0.50 as ganacias from song so, request re, artist ar, usuario usu where so.id_artist = ar.id_artist and so.id_song = re.id_song and re.id_user = usu.id_user and usu.id_user <> ar.id_artist and ar.id_artist = 1 group by  ar.art_name order by reproducciones desc;
+
+select ar.id_artist, ar.art_name, count(re.id_request) as reproducciones, count(re.id_request)*0.50 as ganacias from song so, request re, artist ar, usuario usu where so.id_artist = ar.id_artist and so.id_song = re.id_song and re.id_user = usu.id_user and usu.id_user <> ar.id_artist group by  ar.id_artist, ar.art_name order by reproducciones desc;
+
+SELECT * FROM fondos ;
+SELECT * FROM artist ;
+SELECT * FROM song ;
+SELECT * FROM album;
+SELECT * FROM usuario;
+SELECT * FROM bitacora;
