@@ -351,6 +351,8 @@ while(True):
 
         elif op == 6:# Cálculo de comisiones para artistas
             print("\tComisiones") 
+            mensaje = controller.desactivarCancion(cancion)
+            print(mensaje['message'])
             print("\t\t1) Reporte de comisiones")
         elif op == 7:# Bitácora de operaciones en el sistema
             print("\tBitacora de operaciones") 

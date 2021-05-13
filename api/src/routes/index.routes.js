@@ -8,7 +8,7 @@ const {getLogin, getUsers, getUserByUsername, addUser,
     getAlbums,getAlbumByName,addAlbum, updateAlbum, deleteAlbum,
     getPlaylists, getPlaylistByName,addPlaylist, savesSongToPlaylist,
     enableSong, getAlbumsLastWeek, getPopularArtists, getActiveArtists, getPopularGenres, getActiveUsers, getSubscripciones, getDailyUser,
-    desactivarArtista, desactivarCancion, desactivarAlbum} = require('../controllers/index.controller');
+    desactivarArtista, desactivarCancion, desactivarAlbum, ComisionesArtistas} = require('../controllers/index.controller');
 
 router.get('/login/:username/:password', getLogin)
 
@@ -38,6 +38,8 @@ router.get('/playlists/:name', getPlaylistByName)
 
 router.get('/subscripciones', getSubscripciones)
 router.get('/dailyuser/:id_user', getDailyUser)
+
+router.get('/comisionesartistas', ComisionesArtistas)
 
 
 router.post('/users', addUser);
