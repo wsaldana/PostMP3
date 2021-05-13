@@ -81,3 +81,10 @@ def desactivarArtista(nombre):
         return response.json()
     except:
         return None
+
+def desactivarCancion(cancion):
+    response = requests.put(f"http://localhost:3000/desactivarcancion/{cancion}") 
+    try:
+        return response.json()
+    except:
+        return None

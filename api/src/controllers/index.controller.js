@@ -298,6 +298,18 @@ const desactivarArtista = async (req, res) => {
     res.json({message: "Se desactivo correctamente"});
 }
 
+const desactivarCancion = async (req, res) => {
+    const response = await pool.query("select * from desactivar_cancion($1)", [req.params.cancion]);
+    res.json({message: "Se desactivo correctamente"});
+}
+
+const desactivarAlbum = async (req, res) => {
+    const response = await pool.query("select * from desactivar_album($1)", [req.params.album]);
+    res.json({message: "Se desactivo correctamente"});
+}
+
+
+
 module.exports = {
     getLogin,
     getUsers,
@@ -334,5 +346,7 @@ module.exports = {
     getActiveUsers,
     getSubscripciones,
     getDailyUser, 
-    desactivarArtista
+    desactivarArtista,
+    desactivarCancion,
+    desactivarAlbum
 };
