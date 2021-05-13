@@ -40,7 +40,7 @@ while(True):
         print("\t14) Eliminar suscripciones de usuarios")
         print("\t15) Desactivar usuarios artistas")
         #proyecto parte2
-        print("\t16) Cerrar")  
+        print("\t16) Cerrar")
         op = int(input("Ingrese una opcion: "))
         if op == 1:
             print("\tBUSCAR.....") #Menu buscar
@@ -351,6 +351,8 @@ while(True):
 
         elif op == 6:# Cálculo de comisiones para artistas
             print("\tComisiones") 
+            mensaje = controller.desactivarCancion(cancion)
+            print(mensaje['message'])
             print("\t\t1) Reporte de comisiones")
         elif op == 7:# Bitácora de operaciones en el sistema
             print("\tBitacora de operaciones") 
@@ -406,30 +408,28 @@ while(True):
             mensaje = controller.desactivarArtista(id_cancion, nombre, genero, url)
             print(mensaje['message'])
         elif op == 10:
-            id_album = int(input("ID del album: "))
-            nombre = input("Nuevo nombre del album: ")
-            fecha = input("Nueva fecha de lanzamiento (Por favor escribir formato: YYYY-MM-DD): ")
-            mensaje = controller.desactivarArtista(id_album, nombre, fecha)
+            id_usuario_insertado = int(input("ID del usuario: "))
+            mensaje = controller.desactivarArtista(id_usuario_insertado)
             print(mensaje['message'])
         elif op == 11:
-            nombre = input("Nombre de la cancion: ")
-            mensaje = controller.desactivarArtista(nombre)
+            cancion = input("Nombre del cancion: ")
+            mensaje = controller.desactivarCancion(cancion)
             print(mensaje['message'])
         elif op == 12:
-            nombre = input("Nombre del album: ")
-            mensaje = controller.desactivarArtista(nombre)
+            album = input("Nombre del album: ")
+            mensaje = controller.desactivarAlbum(album)
             print(mensaje['message'])
         elif op == 13:
             id_usuario_insertado = int(input("ID del usuario: "))
-            mensaje = controller.desactivarArtista(id_usuario_insertado)
+            mensaje = controller.desactivarUsuarioSS(id_usuario_insertado)
             print(mensaje['message'])
         elif op == 14:
             id_usuario_insertado = int(input("ID del usuario: "))
-            mensaje = controller.desactivarArtista(id_usuario_insertado)
+            mensaje = controller.eliminarSuscripcion(id_usuario_insertado)
             print(mensaje['message'])
         elif op == 15:
             nombre = input("Nombre del artista: ")
-            mensaje = controller.desactivarArtista(nombre)
+            mensaje = controller.desactivarUsuarioA(nombre)
             print(mensaje['message'])
         elif op == 16:
             print("Esperemos vuelva pronto")

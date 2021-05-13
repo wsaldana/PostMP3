@@ -8,7 +8,7 @@ const {getLogin, getUsers, getUserByUsername, addUser,
     getAlbums,getAlbumByName,addAlbum, updateAlbum, deleteAlbum,
     getPlaylists, getPlaylistByName,addPlaylist, savesSongToPlaylist,
     enableSong, getAlbumsLastWeek, getPopularArtists, getActiveArtists, getPopularGenres, getActiveUsers, getSubscripciones, getDailyUser,
-    desactivarArtista} = require('../controllers/index.controller');
+    desactivarArtista, desactivarCancion, desactivarAlbum, ComisionesArtistas, desactivarUsuarioSS, eliminarSuscripcion, desactivarUsuarioA} = require('../controllers/index.controller');
 
 router.get('/login/:username/:password', getLogin)
 
@@ -39,6 +39,8 @@ router.get('/playlists/:name', getPlaylistByName)
 router.get('/subscripciones', getSubscripciones)
 router.get('/dailyuser/:id_user', getDailyUser)
 
+router.get('/comisionesartistas', ComisionesArtistas)
+
 
 router.post('/users', addUser);
 router.post('/songs', addSong)
@@ -53,6 +55,11 @@ router.put('/songs', updateSong)
 router.put('/albums', updateAlbum)
 router.put('/enablesong', enableSong)
 router.put('/desactivarartista/:nombre', desactivarArtista)
+router.put('/desactivarcancion/:cancion', desactivarCancion)
+router.put('/desactivaralbum/:album', desactivarAlbum)
+router.put('/desactivarUsuarioSS/:id_usuario_insertado', desactivarUsuarioSS)
+router.put('/eliminarSuscripcion/:id_usuario_insertado', eliminarSuscripcion)
+router.put('/desactivarUsuarioA/:nombre', desactivarUsuarioA)
 
 
 router.delete('/songs/:id_song', deleteSong)

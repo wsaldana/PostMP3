@@ -298,6 +298,36 @@ const desactivarArtista = async (req, res) => {
     res.json({message: "Se desactivo correctamente"});
 }
 
+const desactivarCancion = async (req, res) => {
+    const response = await pool.query("select * from desactivar_cancion($1)", [req.params.cancion]);
+    res.json({message: "Se desactivo correctamente"});
+}
+
+const desactivarAlbum = async (req, res) => {
+    const response = await pool.query("select * from desactivar_album($1)", [req.params.album]);
+    res.json({message: "Se desactivo correctamente"});
+}
+
+const ComisionesArtistas = async (req, res) => {
+    const response = await pool.query("select ar.art_name, count(re.id_request) as reproducciones, count(re.id_request)*0.50 as ganacias from song so, request re, artist ar, usuario usu where so.id_artist = ar.id_artist and so.id_song = re.id_song and re.id_user = usu.id_user and usu.id_user <> ar.id_artist group by  ar.art_name order by reproducciones desc;");
+    res.json({rows: response.rows});
+}
+
+const desactivarUsuarioSS = async (req, res) => {
+    const response = await pool.query("select * from desactivar_usuario($1)", [req.params.id_usuario_insertado]);
+    res.json({message: "Se desactivo correctamente"});
+}
+
+const eliminarSuscripcion = async (req, res) => {
+    const response = await pool.query("select * from eliminar_suscripcion($1)", [req.params.id_usuario_insertado]);
+    res.json({message: "Se ha eliminado la suscripcion"});
+}
+
+const desactivarUsuarioA = async (req, res) => {
+    const response = await pool.query("select * from desactivar_artista($1)", [req.params.nombre]);
+    res.json({message: "Se ha desactivado el/la artista"});
+}
+
 module.exports = {
     getLogin,
     getUsers,
@@ -334,5 +364,11 @@ module.exports = {
     getActiveUsers,
     getSubscripciones,
     getDailyUser, 
-    desactivarArtista
+    desactivarArtista,
+    desactivarCancion,
+    desactivarAlbum,
+    ComisionesArtistas,
+    desactivarUsuarioSS,
+    eliminarSuscripcion,
+    desactivarUsuarioA
 };
