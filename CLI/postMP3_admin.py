@@ -31,9 +31,16 @@ while(True):
         print("\t6) Cálculo de comisiones para artistas")
         print("\t7) Bitácora de operaciones en el sistema")
         print("\t8) Reportería (reportes personalisados/nuevos)")
-        print("\t10) Desactivar usuarios artistas")
+        #PRINCIPALES TAREAS
+        print("\t9) Modificar la informacion de cualquier track")
+        print("\t10) Modificar la informacion de cualquier album")
+        print("\t11) Desactivar track")
+        print("\t12) Desactivar album")
+        print("\t13) Desactivar usuarios sin suscripcion para que ya no puedan acceder a la plataforma")
+        print("\t14) Eliminar suscripciones de usuarios")
+        print("\t15) Desactivar usuarios artistas")
         #proyecto parte2
-        print("\t9) Cerrar")  
+        print("\t16) Cerrar")  
         op = int(input("Ingrese una opcion: "))
         if op == 1:
             print("\tBUSCAR.....") #Menu buscar
@@ -392,12 +399,41 @@ while(True):
                 print("")
         #PoryectoParete2
         elif op == 9:
-            print("Esperemos vuelva pronto")
-            exit()
+            id_cancion = int(input("ID de la cancion: "))
+            nombre = input("Nuevo nombre de la cancion: ")
+            genero = input("Nuevo genero de la cancion: ")
+            url = input("Nuevo URL de la cancion: ")
+            mensaje = controller.desactivarArtista(id_cancion, nombre, genero, url)
+            print(mensaje['message'])
         elif op == 10:
+            id_album = int(input("ID del album: "))
+            nombre = input("Nuevo nombre del album: ")
+            fecha = input("Nueva fecha de lanzamiento (Por favor escribir formato: YYYY-MM-DD): ")
+            mensaje = controller.desactivarArtista(id_album, nombre, fecha)
+            print(mensaje['message'])
+        elif op == 11:
+            nombre = input("Nombre de la cancion: ")
+            mensaje = controller.desactivarArtista(nombre)
+            print(mensaje['message'])
+        elif op == 12:
+            nombre = input("Nombre del album: ")
+            mensaje = controller.desactivarArtista(nombre)
+            print(mensaje['message'])
+        elif op == 13:
+            id_usuario_insertado = int(input("ID del usuario: "))
+            mensaje = controller.desactivarArtista(id_usuario_insertado)
+            print(mensaje['message'])
+        elif op == 14:
+            id_usuario_insertado = int(input("ID del usuario: "))
+            mensaje = controller.desactivarArtista(id_usuario_insertado)
+            print(mensaje['message'])
+        elif op == 15:
             nombre = input("Nombre del artista: ")
             mensaje = controller.desactivarArtista(nombre)
             print(mensaje['message'])
+        elif op == 16:
+            print("Esperemos vuelva pronto")
+            exit()
         else:
             print('opcion no valida')
     except ValueError: 
