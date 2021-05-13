@@ -34,8 +34,11 @@ while True:
 
         user_data = controller.login(usuario,contra)
         if(user_data):
-            print("\n/ * Bienvenido ", user_data['username'], " * /")
-            break
+            if(user_data['enabled'] == True):
+                print("\n/ * Bienvenido ", user_data['username'], " * /")
+                break
+            else:
+                print("Usted esta deshabilitado...\n")
         else:
             print("\nCredenciales incorrectos.\n")
 

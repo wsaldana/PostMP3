@@ -5,7 +5,7 @@ const pool = new Pool(parameters);
 
 const getLogin = async (req, res) => {
     const {username, password} = req.params
-    const response = await pool.query("SELECT id_user, username, id_artist, id_manager, id_monitor FROM Usuario WHERE username=$1 AND contrasena=$2", [username, password]);
+    const response = await pool.query("SELECT id_user, username, id_artist, id_manager, id_monitor, enabled FROM Usuario WHERE username=$1 AND contrasena=$2", [username, password]);
     res.json(response.rows[0]);
 }
 
@@ -315,7 +315,12 @@ const ComisionesArtistas = async (req, res) => {
 
 const desactivarUsuarioSS = async (req, res) => {
     const response = await pool.query("select * from desactivar_usuario($1)", [req.params.id_usuario_insertado]);
-    res.json({message: "Se desactivo correctamente"});
+    try{
+        res.json({message: "Se desactivo correctamente"});
+    }catch (e){
+        res.json({message: "No se pudo desactivar"});
+    }
+    
 }
 
 const eliminarSuscripcion = async (req, res) => {
