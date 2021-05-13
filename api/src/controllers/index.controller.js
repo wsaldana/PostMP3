@@ -44,17 +44,17 @@ const getSearchSongs = async (req, res) => {
 }
 
 const getSearchSongsByGenre = async (req, res) => {
-    const response = await pool.query("SELECT id_song, song_name, genre, url, art_name FROM song s INNER JOIN artist a ON s.id_artist = a.id_artist WHERE genre LIKE LOWER('%"+req.params.genre+"%') AND enabled=true");
+    const response = await pool.query("SELECT id_song, song_name, genre, url, art_name FROM song s INNER JOIN artist a ON s.id_artist = a.id_artist WHERE genre LIKE LOWER('%"+req.params.genre+"%') AND s.enabled=true");
     res.json({rows: response.rows});
 }
 
 const getSearchSongsByAlbum = async (req, res) => {
-    const response = await pool.query("SELECT s.*, a.art_name FROM song s INNER JOIN artist a ON s.id_artist = a.id_artist WHERE s.id_album = $1 AND enabled=true", [req.params.id_album]);
+    const response = await pool.query("SELECT s.*, a.art_name FROM song s INNER JOIN artist a ON s.id_artist = a.id_artist WHERE s.id_album = $1 AND s.enabled=true", [req.params.id_album]);
     res.json({rows: response.rows});
 }
 
 const getSearchSongsByPlaylist = async (req, res) => {
-    const response = await pool.query("SELECT sa.* FROM (song s INNER JOIN artist a ON s.id_artist = a.id_artist) AS sa INNER JOIN playlist_song p ON p.id_song = sa.id_song WHERE p.id_playlist = $1 AND enabled=true", [req.params.id_playlist]);
+    const response = await pool.query("SELECT sa.* FROM (song s INNER JOIN artist a ON s.id_artist = a.id_artist) AS sa INNER JOIN playlist_song p ON p.id_song = sa.id_song WHERE p.id_playlist = $1 AND sa.enabled=true", [req.params.id_playlist]);
     res.json({rows: response.rows});
 }
 
