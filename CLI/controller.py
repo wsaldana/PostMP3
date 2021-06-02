@@ -1,4 +1,5 @@
 import requests
+import pymongo as pm
 
 def login(username, password):
     response = requests.get(f"http://localhost:3000/login/{username}/{password}")
@@ -116,3 +117,38 @@ def desactivarUsuarioA(nombre):
         return response.json()
     except:
         return None
+
+def mongoSaveUsers(fecha):
+    # conectar a la instancia mongo
+    client = pm.MongoClient('localhost', 27017)
+    mongo_db = client.postmp3
+    # verificar si la fecha ya fue ingresada
+    if(mongo_db.fechas.find_one({"fecha":fecha}) == None):
+        # fetch data del api
+        response = requests.get(f"http://localhost:3000/mongo/{fecha}") 
+        usuarios = response.json()['rows']
+        mapUsuarios = {}
+        for usuario in usuarios:
+            reproduccion = {
+                "fecha": usuario['date_req'],
+                "song_name": usuario['song_name'],
+                "genre": usuario['genre'],
+                "url": usuario['url'],
+                "art_name": usuario['art_name']
+            }
+            if(mapUsuarios.get(usuario['id_user']) == None):
+                mapUsuarios[usuario['id_user']] = {
+                    "id_user": usuario['id_user'],
+                    "username": usuario['username'],
+                    "reproducciones": [reproduccion]
+                }
+            else:
+                mapUsuarios[usuario['id_user']]['reproducciones'].append(reproduccion)
+        for usuario in mapUsuarios.values():
+            res = mongo_db.usuarios.find_one_and_update({"id_user": usuario['id_user']}, {'$push': {'reproducciones': {'$each':usuario['reproducciones']}}}, upsert=False)
+            if(res == None):
+                res = mongo_db.usuarios.insert_one(usuario)
+        mongo_db.fechas.insert_one({"fecha":fecha})
+    return True
+    
+print(mongoSaveUsers('2019-04-20'))

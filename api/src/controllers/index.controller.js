@@ -333,6 +333,12 @@ const desactivarUsuarioA = async (req, res) => {
     res.json({message: "Se ha desactivado el/la artista"});
 }
 
+/* -------------------------------------------------- Proyecto 3 -----------------------------------------------------------------------------------------------*/
+const getUsuariosRequestsByDate = async (req, res) => {
+    const response = await pool.query("SELECT u.id_user, r.date_req, u.username, s.song_name, s.genre, s.url, a.art_name FROM request r INNER JOIN usuario u ON r.id_user=u.id_user INNER JOIN song s ON r.id_song=s.id_song INNER JOIN artist a ON s.id_artist=a.id_artist WHERE s.enabled=true AND r.date_req=$1", [req.params.date]);
+    res.json({rows: response.rows})
+}
+
 module.exports = {
     getLogin,
     getUsers,
@@ -375,5 +381,6 @@ module.exports = {
     ComisionesArtistas,
     desactivarUsuarioSS,
     eliminarSuscripcion,
-    desactivarUsuarioA
+    desactivarUsuarioA, 
+    getUsuariosRequestsByDate
 };
