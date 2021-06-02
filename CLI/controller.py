@@ -1,5 +1,9 @@
 import requests
 import pymongo as pm
+import pandas as pd
+from datetime import datetime, timedelta
+from bson.json_util import dumps
+from bson.json_util import loads
 
 def login(username, password):
     response = requests.get(f"http://localhost:3000/login/{username}/{password}")
@@ -150,5 +154,64 @@ def mongoSaveUsers(fecha):
                 res = mongo_db.usuarios.insert_one(usuario)
         mongo_db.fechas.insert_one({"fecha":fecha})
     return True
+
+def formatDate(track):
+    fecha = track['fecha']
+    date = fecha.split('-')
+    date[2] = date[2].split('T')[0]
+    date = list(map(lambda x: int(x), date))
+    d = datetime(date[0],date[1],date[2])
+    track['fecha'] = d
+    return track
+
+def recommendation_alg(user, mongo_db):
+    reproducciones = user['reproducciones']
+    df = pd.DataFrame(reproducciones)
+    genre = df.mode()['genre'][0]
+    pipeline2 = [
+       { "$unwind": "$reproducciones" },
+       { "$match": { "reproducciones.genre" : genre } },
+       { "$replaceRoot": { "newRoot": "$reproducciones" } }
+    ]
+    tracks = list(map(formatDate, list(mongo_db.usuarios.aggregate(pipeline2))))
+    tracks = list(filter(lambda t: divmod((datetime.now() - t['fecha']).total_seconds(), 31536000)[0] < 1, tracks))
+    df_tracks = pd.DataFrame(tracks).mode().loc[[0],['song_name','url','art_name']]
+    return {
+        "id_user": user['id_user'],
+        "username": user['username'],
+        "song_name": df_tracks['song_name'][0],
+        "url": df_tracks['url'][0],
+        "art_name": df_tracks['art_name'][0]
+    }
+        
     
-print(mongoSaveUsers('2019-04-20'))
+def recommendSongs():
+    # conectar a la instancia mongo
+    client = pm.MongoClient('localhost', 27017)
+    mongo_db = client.postmp3
+    pipeline = [
+        { "$project": {
+            "id_user": 1,
+            "username": 1,
+            "reproducciones": 1,
+            "n": { "$size": "$reproducciones" }
+        }},
+        { "$project": {
+            "id_user": 1,
+            "username": 1,
+            "reproducciones": 1,
+            "n": 1,
+            "filter": { "$gt": ["$n", 2] }
+        }},
+        { "$match": { "filter" : True} },
+        { "$sort": { "n": 1 } },
+        { "$limit": 10 }
+    ]
+    selected_users = list(mongo_db.usuarios.aggregate(pipeline))
+    recomendations = []
+    for user in selected_users:
+        recomendations.append(recommendation_alg(user, mongo_db))
+    return pd.DataFrame(recomendations)
+    
+#print(recommendSongs())
+#print(mongoSaveUsers('2020-01-28'))
