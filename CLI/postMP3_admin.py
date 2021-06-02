@@ -39,8 +39,11 @@ while(True):
         print("\t13) Desactivar usuarios sin suscripcion para que ya no puedan acceder a la plataforma")
         print("\t14) Eliminar suscripciones de usuarios")
         print("\t15) Desactivar usuarios artistas")
+        #RECOMENDACIONES
+        print('\t16) Migrar usuarios al sistema de recomendación')
+        print('\t17) Recomendaciones')
         #proyecto parte2
-        print("\t16) Cerrar")
+        print("\t18) Cerrar")
         op = int(input("Ingrese una opcion: "))
         if op == 1:
             print("\tBUSCAR.....") #Menu buscar
@@ -432,6 +435,30 @@ while(True):
             mensaje = controller.desactivarUsuarioA(nombre)
             print(mensaje['message'])
         elif op == 16:
+            print("Ingrese la fecha de reproducciones:")
+            dia = input("\tDía: ")
+            mes = input("\tMes: ")
+            a = input("\tAño: ")
+            migracion = controller.mongoSaveUsers(a,'-',mes,'-',dia)
+            if migracion:
+                print("Mirgación finalizada correctamente.")
+            else:
+                print("Ocurrió un error al migrar los datos.")
+        elif op == 17:
+            print("Mostrando recomendaciones para usuarios selectos:")
+            data = controller.recommendSongs()
+            print(data)
+            print("Desea enviar las recomendaciones a los usuarios: ")
+            enviar = input("\t1) Si \n\t2) No \n ")
+            if(enviar == "1"):
+                rec = controller.sendRecommendations(data)
+                if(rec):
+                    print("Los usuarios fueron notificados con sus recomendaciones.")
+                else:
+                    print("Ocurrió un error al enviar las recomendaciones.")
+            else:
+                print("Las recomendaciones no se notificaran a los usuarios.")
+        elif op == 18:
             print("Esperemos vuelva pronto")
             exit()
         else:

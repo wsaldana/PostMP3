@@ -123,37 +123,40 @@ def desactivarUsuarioA(nombre):
         return None
 
 def mongoSaveUsers(fecha):
-    # conectar a la instancia mongo
-    client = pm.MongoClient('localhost', 27017)
-    mongo_db = client.postmp3
-    # verificar si la fecha ya fue ingresada
-    if(mongo_db.fechas.find_one({"fecha":fecha}) == None):
-        # fetch data del api
-        response = requests.get(f"http://localhost:3000/mongo/{fecha}") 
-        usuarios = response.json()['rows']
-        mapUsuarios = {}
-        for usuario in usuarios:
-            reproduccion = {
-                "fecha": usuario['date_req'],
-                "song_name": usuario['song_name'],
-                "genre": usuario['genre'],
-                "url": usuario['url'],
-                "art_name": usuario['art_name']
-            }
-            if(mapUsuarios.get(usuario['id_user']) == None):
-                mapUsuarios[usuario['id_user']] = {
-                    "id_user": usuario['id_user'],
-                    "username": usuario['username'],
-                    "reproducciones": [reproduccion]
+    try:
+        # conectar a la instancia mongo
+        client = pm.MongoClient('localhost', 27017)
+        mongo_db = client.postmp3
+        # verificar si la fecha ya fue ingresada
+        if(mongo_db.fechas.find_one({"fecha":fecha}) == None):
+            # fetch data del api
+            response = requests.get(f"http://localhost:3000/mongo/{fecha}") 
+            usuarios = response.json()['rows']
+            mapUsuarios = {}
+            for usuario in usuarios:
+                reproduccion = {
+                    "fecha": usuario['date_req'],
+                    "song_name": usuario['song_name'],
+                    "genre": usuario['genre'],
+                    "url": usuario['url'],
+                    "art_name": usuario['art_name']
                 }
-            else:
-                mapUsuarios[usuario['id_user']]['reproducciones'].append(reproduccion)
-        for usuario in mapUsuarios.values():
-            res = mongo_db.usuarios.find_one_and_update({"id_user": usuario['id_user']}, {'$push': {'reproducciones': {'$each':usuario['reproducciones']}}}, upsert=False)
-            if(res == None):
-                res = mongo_db.usuarios.insert_one(usuario)
-        mongo_db.fechas.insert_one({"fecha":fecha})
-    return True
+                if(mapUsuarios.get(usuario['id_user']) == None):
+                    mapUsuarios[usuario['id_user']] = {
+                        "id_user": usuario['id_user'],
+                        "username": usuario['username'],
+                        "reproducciones": [reproduccion]
+                    }
+                else:
+                    mapUsuarios[usuario['id_user']]['reproducciones'].append(reproduccion)
+            for usuario in mapUsuarios.values():
+                res = mongo_db.usuarios.find_one_and_update({"id_user": usuario['id_user']}, {'$push': {'reproducciones': {'$each':usuario['reproducciones']}}}, upsert=False)
+                if(res == None):
+                    res = mongo_db.usuarios.insert_one(usuario)
+            mongo_db.fechas.insert_one({"fecha":fecha})
+        return True
+    except:
+        return False
 
 def formatDate(track):
     fecha = track['fecha']
@@ -212,6 +215,19 @@ def recommendSongs():
     for user in selected_users:
         recomendations.append(recommendation_alg(user, mongo_db))
     return pd.DataFrame(recomendations)
+
+def sendRecommendations(df):
+    try:
+        client = pm.MongoClient('localhost', 27017)
+        mongo_db = client.postmp3
+        mongo_db.recomendaciones.delete_many({})
+        for i in range(len(df.index)):
+            d = dict(df.loc[i])
+            d['id_user'] = int(d['id_user'])
+            mongo_db.recomendaciones.insert_one(d)
+        return True
+    except:
+        return False
     
 #print(recommendSongs())
 #print(mongoSaveUsers('2020-01-28'))
