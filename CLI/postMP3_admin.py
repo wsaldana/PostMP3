@@ -127,10 +127,12 @@ while(True):
         print("\t13) Desactivar usuarios sin suscripcion para que ya no puedan acceder a la plataforma")
         print("\t14) Eliminar suscripciones de usuarios")
         print("\t15) Desactivar usuarios artistas")
+        #RECOMENDACIONES
+        print('\t16) Migrar usuarios al sistema de recomendación')
+        print('\t17) Recomendaciones')
+        print('\t18) Simulacion')
         #proyecto parte2
-        #proyectoParte3
-        print("\t16) Generar canciones")
-        print("\t17) Cerrar")
+        print("\t19) Cerrar")
         op = int(input("Ingrese una opcion: "))
         if op == 1:
             print("\tBUSCAR.....") #Menu buscar
@@ -522,6 +524,30 @@ while(True):
             mensaje = controller.desactivarUsuarioA(nombre)
             print(mensaje['message'])
         elif op == 16:
+            print("Ingrese la fecha de reproducciones:")
+            dia = input("\tDía: ")
+            mes = input("\tMes: ")
+            a = input("\tAño: ")
+            migracion = controller.mongoSaveUsers(a+'-'+mes+'-'+dia)
+            if migracion:
+                print("Mirgación finalizada correctamente.")
+            else:
+                print("Ocurrió un error al migrar los datos.")
+        elif op == 17:
+            print("Mostrando recomendaciones para usuarios selectos:")
+            data = controller.recommendSongs()
+            print(data)
+            print("Desea enviar las recomendaciones a los usuarios: ")
+            enviar = input("\t1) Si \n\t2) No \n ")
+            if(enviar == "1"):
+                rec = controller.sendRecommendations(data)
+                if(rec):
+                    print("Los usuarios fueron notificados con sus recomendaciones.")
+                else:
+                    print("Ocurrió un error al enviar las recomendaciones.")
+            else:
+                print("Las recomendaciones no se notificaran a los usuarios.")
+        elif op == 18:
             CantidadDeCanciones = int(input("Ingrese cantidad de canciones a generar....  ")) #Num a generar
             Reproducciones = int(input("Ingrese cantidad que desea reproducir cada cancion.... ")) #Num a generar
             FechaGener = input("Ingrese la Fecha de Generacion. Ejem: 2020-1-23 o 2020-12-20....  ") #Debe ir en la tabla de song
@@ -538,8 +564,7 @@ while(True):
             dia1=int(FechaRepA[2])
             FechaRep = datetime.date(año1, mes1, dia1)
             simulacion(CantidadDeCanciones, Reproducciones, FechaGener, FechaRep)
-            
-        elif op == 17:
+        elif op == 19:
             print("Esperemos vuelva pronto")
             exit()
         else:

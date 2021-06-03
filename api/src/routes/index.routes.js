@@ -1,14 +1,17 @@
 const {Router} = require('express');
 const router = Router();
 
-const {getLogin, getUsers, getUserByUsername, addUser, 
+const {
+    getLogin, getUsers, getUserByUsername, addUser, 
     getSongs, getSongsByName,
     getSearchSongs, getSearchSongsByGenre, getSearchSongsByAlbum, getSearchSongsByPlaylist, addSong, updateSong, deleteSong,
     getArtists, getArtistByName, addArtist, updateArtist, deleteArtist,
     getAlbums,getAlbumByName,addAlbum, updateAlbum, deleteAlbum,
     getPlaylists, getPlaylistByName,addPlaylist, savesSongToPlaylist,
     enableSong, getAlbumsLastWeek, getPopularArtists, getActiveArtists, getPopularGenres, getActiveUsers, getSubscripciones, getDailyUser,
-    desactivarArtista, desactivarCancion, desactivarAlbum, ComisionesArtistas, desactivarUsuarioSS, eliminarSuscripcion, desactivarUsuarioA} = require('../controllers/index.controller');
+    desactivarArtista, desactivarCancion, desactivarAlbum, ComisionesArtistas, desactivarUsuarioSS, eliminarSuscripcion, desactivarUsuarioA,
+    getUsuariosRequestsByDate
+} = require('../controllers/index.controller');
 
 router.get('/login/:username/:password', getLogin)
 
@@ -40,6 +43,8 @@ router.get('/subscripciones', getSubscripciones)
 router.get('/dailyuser/:id_user', getDailyUser)
 
 router.get('/comisionesartistas', ComisionesArtistas)
+
+router.get('/mongo/:date', getUsuariosRequestsByDate)
 
 
 router.post('/users', addUser);
