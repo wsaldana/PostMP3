@@ -8,6 +8,15 @@ Proyecto 2
 '''
 
 import controller
+import psycopg2 as pg
+import random
+import datetime
+
+#conexion con la base de datos
+conexion = pg.connect(host="localhost", database="Proyecto1BD", user="postgres", password="contrasena")
+
+# Creamos el cursor con el objeto conexion
+cur = conexion.cursor()
 
 print(" |-------------------------------|")
 print(" |     * PROYECTO2 postMP3 *     |")
@@ -17,6 +26,85 @@ print(" |    Carlos Ráxtum #19721       |")
 print(" |    Abraham Gutierrez #19111   |")
 print(" |_______________________________| \n")
 
+
+#Modulo para la simulacion
+def simulacion (CantidadDeCanciones, Reproducciones, FechaGener, FechaRep):
+    
+    for i in range(CantidadDeCanciones):    
+        genre = ["reggaeton", "r&b/soul", "pop", "latin pop", "banda", "classic rock", "rock"]      
+        songs = ["I Love Me", "Pretty Hurts", "Abrázame", "Du hast", "In Your Eyes", "Thriller", "Like a Prayer",
+                 "Everybody ", "Rehab", "Get Lucky", "Uptown Funk", "Take on me", "Crazy", "Sorry", "Firework",
+                 "Hey ya!", "Despacito", "Mala", "Adan y eva", "Adictiva", "Mia", "Booty", "Lo malo", "PPP",
+                 "Taki Taki", "Imposible", "Solo de mi", "Amanece", "Malamente", "Telefono", "Celoso", 
+                 "Bubalo", "Esta Rico", "Lo siento", "Ibiza", "Replay", "Asesina", "Mujeres", "Creeme",  
+                 "Mala Mia", "Bebe", "Rico", "Sin pijama", "Loca", "Bajito", "Perdon", "culpables", "Caro", 
+                 "Te bote", "Desconocidos", "Usted", "Devuelveme", "5 sentidos", "A solas", "One Kiss", 
+                 "La cintura", "Bien duro", "Shallow", "Promesis", "Somos", "Say my name", "Me niego", "Ola", 
+                 "Solo", "Sin ti", "Dura", "Fuego", "Quiere Beber", "Bagddad", "Happier", "Clandestino", 
+                 "In my mind", "200 MPH", "La Romana", "Flames", "Calypso", "Amor", "Shape of You", "Rockstar",
+                 "One Dance", "Closer", "Sunflower", "Señorita", "Bad Guy", "Perfect", "Believer", "Lucid Dreams", 
+                 "Photograph", "Havana", "Sad!", "Love yourself", "New rules", "Shallow", "Thunder", "All of me", 
+                 "Lean on", "7 Rings", "Sorry", "Goosebumps", "Humble", "Psycho", "Lovely", "Better Now", "Circles", 
+                 "Faded", "Congratulations", "Let Her go", "Stay with me", "Treat You Better", "Thank U", 
+                 "I dont care", "Wake me Up", "Unforgettable", "The box", "The Hills", "7 years", "Moonlight", 
+                 "Riptide", "I like it", "Stitches", "I fall Apart", "See you Again", "I like me Better", 
+                 "I like me better", "Heathens", "One Kiss", "Cold Water", "Psycho 2.0", "Demons", "Memories"]
+        
+        #Albums
+        BadBunnyAlb = [1,2,11,12] #1
+        TheWeekndAlb = [3,4,13] #2
+        DuaLipaAlb = [5] #3
+        JBalvinAlb = [6,14,15] #4
+        ArjonaAlb = [7,16,17] #5
+        NodalAlb = [8,18] #6
+        QueenAlb = [9,19] #7
+        GunsAlb = [10,20] #8
+        
+        
+        id_artistRan= random.randint(1, 8) # Asiganrle artista a la cancion.
+        
+        if id_artistRan == 1:
+            id_albumRan= random.choice(BadBunnyAlb)
+        elif id_artistRan == 2:
+            id_albumRan= random.choice(TheWeekndAlb)
+        elif id_artistRan == 3:
+            id_albumRan= random.choice(DuaLipaAlb)
+        elif id_artistRan == 4:
+            id_albumRan= random.choice(JBalvinAlb)
+        elif id_artistRan == 5:
+            id_albumRan= random.choice(ArjonaAlb)
+        elif id_artistRan == 6:
+            id_albumRan= random.choice(NodalAlb)
+        elif id_artistRan == 7:
+            id_albumRan= random.choice(QueenAlb)
+        elif id_artistRan == 8:
+            id_albumRan= random.choice(GunsAlb)     
+        
+        #realizamos la consulta para obtener el id mas alto para tabla song
+        cur.execute("select MAX(id_song) from song")
+        id_song = cur.fetchone()
+        #recorremos los resultados y los mostramos
+        id_song1 = int(id_song[0])
+        id_songNew = 1 + int(id_song1)
+                
+        #ingresa los datos de la cancion
+        cur.execute("INSERT INTO song VALUES ('%s', '%s', '%s', 'URL', '%s', '%s', '%s', '%s')" % (id_songNew, random.choice(songs),random.choice(genre),True, id_artistRan, id_albumRan ,FechaGener))
+        conexion.commit()
+                
+        #aqui iria un for para las reproducciones
+        for a in range(Reproducciones):
+            #rando de usuarios que hacen la reproduccion
+            id_user= random.randint(1, 7)
+            #realizamos la consulta para obtener el id mas alto para tabla request
+            cur.execute("select MAX(id_request) from request")
+            #recorremos los resultados y los mostramos
+            id_request = cur.fetchone()
+            id_request1 = int(id_request[0])
+            id_requestNew = 1 + int(id_request1)
+            
+            cur.execute("INSERT INTO request VALUES ('%s', '%s', '%s', '%s')" % (id_requestNew, FechaRep, id_songNew, id_user))
+            conexion.commit()
+        print("cancion ingreso correctamente")
 
 while(True):
     try:
@@ -40,7 +128,9 @@ while(True):
         print("\t14) Eliminar suscripciones de usuarios")
         print("\t15) Desactivar usuarios artistas")
         #proyecto parte2
-        print("\t16) Cerrar")
+        #proyectoParte3
+        print("\t16) Generar canciones")
+        print("\t17) Cerrar")
         op = int(input("Ingrese una opcion: "))
         if op == 1:
             print("\tBUSCAR.....") #Menu buscar
@@ -432,6 +522,24 @@ while(True):
             mensaje = controller.desactivarUsuarioA(nombre)
             print(mensaje['message'])
         elif op == 16:
+            CantidadDeCanciones = int(input("Ingrese cantidad de canciones a generar....  ")) #Num a generar
+            Reproducciones = int(input("Ingrese cantidad que desea reproducir cada cancion.... ")) #Num a generar
+            FechaGener = input("Ingrese la Fecha de Generacion. Ejem: 2020-1-23 o 2020-12-20....  ") #Debe ir en la tabla de song
+            FechaGenerA = FechaGener.split("-")
+            año=int(FechaGenerA[0])
+            mes=int(FechaGenerA[1])
+            dia=int(FechaGenerA[2])
+            FechaGener = datetime.date(año, mes, dia)
+            print(FechaGener)
+            FechaRep = input("Ingrese la Fecha de Reproduccion Ejem: 2020-1-23 o 2020-12-20....  ") #Debe ir en la tabla de request
+            FechaRepA = FechaRep.split("-")
+            año1=int(FechaRepA[0])
+            mes1=int(FechaRepA[1])
+            dia1=int(FechaRepA[2])
+            FechaRep = datetime.date(año1, mes1, dia1)
+            simulacion(CantidadDeCanciones, Reproducciones, FechaGener, FechaRep)
+            
+        elif op == 17:
             print("Esperemos vuelva pronto")
             exit()
         else:
@@ -439,3 +547,7 @@ while(True):
     except ValueError: 
         print('Por favor, ingresar numeros enteros')
         print("")
+        
+
+        
+conexion.close()
