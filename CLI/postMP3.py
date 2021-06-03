@@ -36,6 +36,10 @@ while True:
         if(user_data):
             if(user_data['enabled'] == True):
                 print("\n/ * Bienvenido ", user_data['username'], " * /")
+                notificacion = controller.getNotified(user_data['id_user'])
+                if(notificacion is not None):
+                    print("\n\t>>Te recomendamos esta rolona: ")
+                    print('\t>>', notificacion['song_name'], ' - ', notificacion['art_name'])
                 break
             else:
                 print("Usted esta deshabilitado...\n")

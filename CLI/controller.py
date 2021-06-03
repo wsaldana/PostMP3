@@ -228,6 +228,16 @@ def sendRecommendations(df):
         return True
     except:
         return False
+
+def getNotified(id_user):
+    try:
+        client = pm.MongoClient('localhost', 27017)
+        mongo_db = client.postmp3
+        notificacion = mongo_db.recomendaciones.find_one({"id_user":id_user})
+        return notificacion
+    except:
+        return None
     
+#print(getNotified(4))
 #print(recommendSongs())
 #print(mongoSaveUsers('2020-01-28'))

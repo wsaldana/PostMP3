@@ -439,7 +439,7 @@ while(True):
             dia = input("\tDía: ")
             mes = input("\tMes: ")
             a = input("\tAño: ")
-            migracion = controller.mongoSaveUsers(a,'-',mes,'-',dia)
+            migracion = controller.mongoSaveUsers(a+'-'+mes+'-'+dia)
             if migracion:
                 print("Mirgación finalizada correctamente.")
             else:
